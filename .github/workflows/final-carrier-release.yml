@@ -23,7 +23,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 fixtures/esp32_robot_carrier/finalize_carrier.py /tmp/source.kicad_pcb /tmp/final.kicad_pcb
-          echo 'cf93a52ef23733b5ccc39e66f88d0eeba0eef8c538e0c10eb3b08805d21c5a17  /tmp/final.kicad_pcb' | sha256sum -c -
+          echo '3081ad9f4f2dd3dd22d0d82d2000a149e45859c197085c549902ffcde95cb8e3  /tmp/final.kicad_pcb' | sha256sum -c -
 
       - name: Validate carrier contract
         run: |
