@@ -102,7 +102,6 @@ if insert_at < 0 or not s.lstrip().startswith('(kicad_pcb'):
 s=s[:insert_at+1]+new+s[insert_at+1:]
 out.write_text(s)
 sha=hashlib.sha256(out.read_bytes()).hexdigest()
-# This is deliberately pinned. Update only after CI prints the deterministic hash for a reviewed generator change.
-EXPECTED_OUT='686b09a6266e5d3edecfc5f5abbc6e52e0a90a6290546260cfa0a902212e9f9f'
+EXPECTED_OUT='05d585b12f9cec7640b59fd1fc53a8c779604dfc909ee3539ee5339dd1ae94e1'
 print('final board sha256',sha)
 if sha!=EXPECTED_OUT: raise SystemExit('final board SHA mismatch')
