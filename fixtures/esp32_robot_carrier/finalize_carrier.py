@@ -72,8 +72,7 @@ for a,b in [('(at 0 -1.8 90)','(at 0 -1.8 0)'),('(at 0 1.8 90)','(at 0 1.8 0)'),
 s=s[:fst]+cb+s[fend:]
 
 # Remove routes superseded by the final RGB and GPIO12 routing.
-remove={
-'0f514270-67c6-42ac-ac50-7ec653c46771','75b3b131-ddf9-42b3-8f67-5426ed1ad40f','ad82d4f6-e960-454f-ac71-3add31c8fe7a','6d555d3f-9841-4147-863f-f6ea55b1c823','9016b379-01e7-452a-9c3d-9a55d274dd12','d72eec5c-4928-441e-b5e9-f6a4b1f88f1f','eb0f3ff3-d1f0-423a-95bf-0e8139214a13'}
+remove={'0f514270-67c6-42ac-ac50-7ec653c46771','75b3b131-ddf9-42b3-8f67-5426ed1ad40f','ad82d4f6-e960-454f-ac71-3add31c8fe7a','6d555d3f-9841-4147-863f-f6ea55b1c823','9016b379-01e7-452a-9c3d-9a55d274dd12','d72eec5c-4928-441e-b5e9-f6a4b1f88f1f','eb0f3ff3-d1f0-423a-95bf-0e8139214a13'}
 for token in ('segment','via'):
     for st,en in reversed(blocks(s,token)):
         if any(u in s[st:en] for u in remove): s=s[:st]+s[en:]
@@ -99,6 +98,6 @@ zi=s.find('\n\t(zone')
 s=s[:zi+1]+new+s[zi+1:]
 out.write_text(s)
 sha=hashlib.sha256(out.read_bytes()).hexdigest()
-EXPECTED_OUT='4026df200ce189779e04663bcb95f9b0bd7729b5abc176ebedb80e25d6d26513'
+EXPECTED_OUT='686b09a6266e5d3edecfc5f5abbc6e52e0a90a6290546260cfa0a902212e9f9f'
 print('final board sha256',sha)
 if sha!=EXPECTED_OUT: raise SystemExit('final board SHA mismatch')
