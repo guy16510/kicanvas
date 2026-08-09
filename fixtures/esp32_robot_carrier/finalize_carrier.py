@@ -11,7 +11,7 @@ if hashlib.sha256(src.read_bytes()).hexdigest()!=EXPECTED_IN:
 
 def blocks(text, token):
     found=[]
-    pat=re.compile(r'(?m)^([ \t]+)\('+re.escape(token)+r'\b')
+    pat=re.compile(r'(?m)^([ \t]*)\('+re.escape(token)+r'\b')
     pos=0
     while True:
         m=pat.search(text,pos)
@@ -84,6 +84,12 @@ for st,en in reversed(blocks(s,'segment')):
     if remove:
         s=s[:st]+s[en:]
 
+# Remove the now-obsolete AUX12 layer-change via at the field pad.
+for st,en in reversed(blocks(s,'via')):
+    b=s[st:en]
+    if '(net 14)' in b and re.search(r'\(at\s+43(?:\.0+)?\s+74(?:\.0+)?\)', b):
+        s=s[:st]+s[en:]
+
 # Original ground pours stopped at y=98 despite the expanded 109 mm board edge.
 # Extend both planes to y=108, retaining 1 mm edge margin.
 s=s.replace('(xy 128 98) (xy 2 98)', '(xy 128 108) (xy 2 108)')
@@ -121,8 +127,8 @@ new+='''  (footprint "C_Radial_5mm_RGB_Bulk" (layer "F.Cu") (at 80.0 103.0)
   (gr_text "RGB 470uF 16V" (at 80 98.7) (layer "F.SilkS") (effects (font (size 0.85 0.85) (thickness 0.14))))
   (gr_text "+" (at 82.5 100.5) (layer "F.SilkS") (effects (font (size 1.0 1.0) (thickness 0.18))))
 '''
-# C4 positive PTH connects to the same +5V backbone on B.Cu. Its negative lead uses the GND plane.
-new+=seg('82.5 103.0','82.5 92.0','0.80','B.Cu',2)
+# C4 positive goes directly to the RGB +5V output pad, avoiding the nearby JP4G ground pad.
+new+=seg('82.5 103.0','88.0 103.0','0.80','B.Cu',2)
 
 # Insert all generated objects as children of the root kicad_pcb expression.
 insert_at=s.rfind('\n)')
@@ -131,7 +137,7 @@ if insert_at < 0 or not s.lstrip().startswith('(kicad_pcb'):
 s=s[:insert_at+1]+new+s[insert_at+1:]
 out.write_text(s)
 sha=hashlib.sha256(out.read_bytes()).hexdigest()
-EXPECTED_OUT='52d0c9edaf3eb31d638c76ef147b1d8b40238388a584746bd6523b3f35a0c667'
+EXPECTED_OUT='cf93a52ef23733b5ccc39e66f88d0eeba0eef8c538e0c10eb3b08805d21c5a17'
 print('final board sha256',sha)
 if sha!=EXPECTED_OUT:
     raise SystemExit('final board SHA mismatch')
