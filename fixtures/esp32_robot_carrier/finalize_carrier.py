@@ -135,7 +135,7 @@ label_moves={
     '(gr_text "R BRAKE ENABLE" (at 18.5 35.6)': '(gr_text "R BRAKE ENABLE" (at 36 35.6)',
     '(gr_text "R REVERSE ENABLE" (at 18.5 65.6)': '(gr_text "R REVERSE ENABLE" (at 36 65.6)',
     '(gr_text "ESP32 VIN <- 5V   |   ESP32 3V3 -> 3V3 RAILS   |   COMMON GND" (at 63 10.5)': '(gr_text "ESP32 VIN <- 5V   |   ESP32 3V3 -> 3V3 RAILS   |   COMMON GND" (at 63 13)',
-    '(gr_text "5V ONLY - NO 36/42V BATTERY" (at 60 95.5)': '(gr_text "5V ONLY - NO 36/42V BATTERY" (at 60 84.5)',
+    '(gr_text "5V ONLY - NO 36/42V BATTERY" (at 60 95.5)': '(gr_text "5V ONLY - NO 36/42V BATTERY" (at 60 82.5)',
     '(gr_text "PI GND" (at 66 101.5)': '(gr_text "PI GND" (at 61.5 101.5)',
 }
 for a,b in label_moves.items():
@@ -148,7 +148,7 @@ if insert_at < 0 or not s.lstrip().startswith('(kicad_pcb'):
 s=s[:insert_at+1]+new+s[insert_at+1:]
 out.write_text(s)
 sha=hashlib.sha256(out.read_bytes()).hexdigest()
-EXPECTED_OUT='3081ad9f4f2dd3dd22d0d82d2000a149e45859c197085c549902ffcde95cb8e3'
+EXPECTED_OUT='115f2eef607307a9be8ac29ba2bc9eb4d7db52efe347948da75c225dc191dcd3'
 print('final board sha256',sha)
 if sha!=EXPECTED_OUT:
     raise SystemExit('final board SHA mismatch')
