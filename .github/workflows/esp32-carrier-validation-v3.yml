@@ -1,0 +1,81 @@
+name: Validate ESP32 carrier PCB v3
+
+on:
+  pull_request:
+    paths:
+      - 'fixtures/esp32_robot_carrier/**'
+      - 'scripts/validate-esp32-carrier-v2.mjs'
+      - '.github/workflows/esp32-carrier-validation-v3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reconstruct exact carrier PCB fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb.gz.b64 | gunzip > fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb
+          echo 'd76be0c4625d4a34c3e5a09d863da20c15aa4491002270aa1ff017080ce78dda  fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb' | sha256sum -c -
+          test "$(wc -c < fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb)" -gt 70000
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install KiCanvas dependencies
+        run: npm ci
+
+      - name: Validate electrical and labeling contract
+        run: node scripts/validate-esp32-carrier-v2.mjs
+
+      - name: Validate KiCanvas source
+        run: |
+          npm run lint:types
+          npm run build:no-check
+
+      - name: Install current stable KiCad from official PPA
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
+          sudo apt-get update
+          sudo apt-get install --install-recommends -y kicad
+          kicad-cli --version
+          kicad-cli pcb drc --help >/dev/null
+
+      - name: Run native KiCad DRC
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb
+          kicad-cli pcb drc --exit-code-violations --severity-all --all-track-errors --output artifacts/drc.rpt "$BOARD"
+          cat artifacts/drc.rpt
+
+      - name: Generate JLCPCB fabrication files
+        shell: bash
+        run: |
+          set -euo pipefail
+          BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb
+          mkdir -p artifacts/gerbers
+          kicad-cli pcb export gerbers --output artifacts/gerbers/ "$BOARD"
+          kicad-cli pcb export drill --output artifacts/gerbers/ --format excellon "$BOARD"
+          find artifacts/gerbers -maxdepth 1 -type f -print | sort
+          test "$(find artifacts/gerbers -maxdepth 1 -type f | wc -l)" -ge 7
+          cp "$BOARD" artifacts/
+          sha256sum artifacts/esp32_robot_carrier_v2.kicad_pcb artifacts/gerbers/* > artifacts/SHA256SUMS.txt
+
+      - name: Upload validated fabrication artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32-carrier-jlcpcb-validated
+          path: artifacts
+          if-no-files-found: error
