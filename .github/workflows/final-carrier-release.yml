@@ -45,17 +45,21 @@ jobs:
           ]
           missing=[x for x in required if x not in s]
           assert not missing, f'missing required PCB contract items: {missing}'
-          nets=set(re.findall(r'\(net\s+\d+\s+"([^"]+)"\)',s))
-          for n in ['+5V','+3V3','GND','LEFT_BRAKE_OUT','RIGHT_BRAKE_OUT','LEFT_REVERSE_OUT','RIGHT_REVERSE_OUT']:
-              assert n in nets, f'missing net {n}'
-          # Four independent 2N7002 channels, no shared brake/reverse transistor.
+          nets=set(re.findall(r'\(net\s+"([^"]+)"\)',s))
+          for n in [
+            '+5V','+3V3','GND',
+            'L_BRAKE_GPIO','L_BRAKE_GATE','L_BRAKE_SW','L_BRAKE_CONN',
+            'R_BRAKE_GPIO','R_BRAKE_GATE','R_BRAKE_SW','R_BRAKE_CONN',
+            'L_REVERSE_GPIO','L_REVERSE_GATE','L_REVERSE_SW','L_REVERSE_CONN',
+            'R_REVERSE_GPIO','R_REVERSE_GATE','R_REVERSE_SW','R_REVERSE_CONN'
+          ]:
+              assert n in nets, f'missing independent channel net {n}'
           qrefs=re.findall(r'\(property "Reference" "(Q\d+)"',s)
           assert len(set(qrefs)) == 4, f'expected 4 unique MOSFETs, found {sorted(set(qrefs))}'
           assert s.count('2N7002') >= 4, 'expected four 2N7002 MOSFET footprints'
           for gpio in ['GPIO33','GPIO32','GPIO27','GPIO14']:
               assert gpio in s, f'missing independent control {gpio}'
-          # RGB must include local decoupling/bulk capacitance metadata and level shifter.
-          assert '74AHCT1G125' in s
+          assert '74AHCT1G125' in s, 'missing RGB 5V level shifter'
           print('carrier contract OK, nets',len(nets),'MOSFETs',sorted(set(qrefs)))
           PY
 
