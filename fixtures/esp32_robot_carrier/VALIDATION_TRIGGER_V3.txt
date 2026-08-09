@@ -1,0 +1,1 @@
+Trigger KiCad 10 native validation for the exact SHA-verified final ESP32 carrier board.
