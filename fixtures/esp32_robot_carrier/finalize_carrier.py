@@ -94,10 +94,15 @@ new+=seg('73.9 100.5','73.9 99.5','0.5','F.Cu','GND')+via('73.9 99.5','GND')
 new+=seg('66.9 101.5','65.5 101.5','0.4','F.Cu','GND')+seg('65.5 101.5','65.5 103.5','0.4','F.Cu','GND')+seg('65.5 103.5','66.9 103.5','0.4','F.Cu','GND')+via('65.5 102.5','GND')
 new+=seg('95 96','100 103','0.6','B.Cu','GND')
 new+=seg('50 52.94','55 52.94','0.28','F.Cu','AUX_GPIO12')+seg('55 52.94','55 74','0.28','F.Cu','AUX_GPIO12')+seg('55 74','43 74','0.28','F.Cu','AUX_GPIO12')
-zi=s.find('\n\t(zone')
-s=s[:zi+1]+new+s[zi+1:]
+
+# Insert new routing as children of the root kicad_pcb expression, never before it.
+insert_at=s.rfind('\n)')
+if insert_at < 0 or not s.lstrip().startswith('(kicad_pcb'):
+    raise SystemExit('could not locate kicad_pcb root closing parenthesis')
+s=s[:insert_at+1]+new+s[insert_at+1:]
 out.write_text(s)
 sha=hashlib.sha256(out.read_bytes()).hexdigest()
+# This is deliberately pinned. Update only after CI prints the deterministic hash for a reviewed generator change.
 EXPECTED_OUT='686b09a6266e5d3edecfc5f5abbc6e52e0a90a6290546260cfa0a902212e9f9f'
 print('final board sha256',sha)
 if sha!=EXPECTED_OUT: raise SystemExit('final board SHA mismatch')
