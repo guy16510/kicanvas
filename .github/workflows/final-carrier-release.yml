@@ -1,0 +1,91 @@
+name: Final ESP32 carrier release
+
+on:
+  pull_request:
+    paths:
+      - 'fixtures/esp32_robot_carrier/**'
+      - '.github/workflows/final-carrier-release.yml'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reconstruct exact source board
+        run: |
+          set -euo pipefail
+          base64 -d fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb.gz.b64 | gunzip > /tmp/source.kicad_pcb
+          echo 'd76be0c4625d4a34c3e5a09d863da20c15aa4491002270aa1ff017080ce78dda  /tmp/source.kicad_pcb' | sha256sum -c -
+
+      - name: Generate deterministic final board
+        run: |
+          set -euo pipefail
+          python3 fixtures/esp32_robot_carrier/finalize_carrier.py /tmp/source.kicad_pcb /tmp/final.kicad_pcb
+          echo '4026df200ce189779e04663bcb95f9b0bd7729b5abc176ebedb80e25d6d26513  /tmp/final.kicad_pcb' | sha256sum -c -
+
+      - name: Validate carrier contract
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('/tmp/final.kicad_pcb').read_text()
+          required=[
+            'ESP32 ROBOT CARRIER v2','5V INPUT ONLY','5V ONLY - NO 36/42V BATTERY',
+            'LEFT HALL A / GPIO16','LEFT HALL B / GPIO17','LEFT HALL C / GPIO36',
+            'RIGHT HALL A / GPIO19','RIGHT HALL B / GPIO21','RIGHT HALL C / GPIO22',
+            'LEFT ULTRA TRIG / GPIO15','RIGHT ULTRA TRIG / GPIO18','FRONT ULTRA TRIG / GPIO5',
+            'LEFT ULTRA ECHO / GPIO35','RIGHT ULTRA ECHO / GPIO39','FRONT ULTRA ECHO / GPIO34',
+            'LEFT THROTTLE / GPIO25','RIGHT THROTTLE / GPIO26','LEFT BRAKE / GPIO33','RIGHT BRAKE / GPIO32',
+            'LEFT REVERSE / GPIO27','RIGHT REVERSE / GPIO14','SERVO / GPIO13','ARM AUX / GPIO12','ARM AUX / GPIO2',
+            'MPU6050 SDA / GPIO4','MPU6050 SCL / GPIO23','RGB LIGHTS','RGB DATA = GPIO2 -> 5V AHCT BUFFER',
+            '3V3 RAIL 1','3V3 RAIL 2','3V3 RAIL 3','3V3 RAIL 4','74AHCT1G125','20k','10k'
+          ]
+          missing=[x for x in required if x not in s]
+          assert not missing, missing
+          assert '(net "+5V")' in s and '(net "+3V3")' in s and '(net "GND")' in s
+          print('carrier contract OK')
+          PY
+
+      - name: Install KiCad 10
+        run: |
+          set -euo pipefail
+          sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y kicad
+          kicad-cli --version
+
+      - name: Native KiCad DRC with zone refill
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          kicad-cli pcb drc --severity-all --all-track-errors --refill-zones --format json --output artifacts/drc.json /tmp/final.kicad_pcb
+          python3 - <<'PY'
+          import json
+          d=json.load(open('artifacts/drc.json'))
+          print('violations',len(d['violations']),'unconnected',len(d['unconnected_items']))
+          if d['violations'] or d['unconnected_items']:
+              from collections import Counter
+              print(Counter(x['type'] for x in d['violations']))
+              raise SystemExit(1)
+          PY
+
+      - name: Generate fabrication files
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/gerbers
+          cp /tmp/final.kicad_pcb artifacts/esp32_robot_carrier_v2_FINAL.kicad_pcb
+          kicad-cli pcb export gerbers --output artifacts/gerbers/ /tmp/final.kicad_pcb
+          kicad-cli pcb export drill --output artifacts/gerbers/ /tmp/final.kicad_pcb
+          test -n "$(find artifacts/gerbers -type f -name '*.gbr' -print -quit)"
+          test -n "$(find artifacts/gerbers -type f \( -name '*.drl' -o -name '*.xln' \) -print -quit)"
+          (cd artifacts/gerbers && zip -q ../esp32_robot_carrier_v2_JLCPCB.zip ./*)
+          unzip -l artifacts/esp32_robot_carrier_v2_JLCPCB.zip
+
+      - name: Upload manufacturing release
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32-robot-carrier-v2-JLCPCB-release
+          path: artifacts
+          if-no-files-found: error
