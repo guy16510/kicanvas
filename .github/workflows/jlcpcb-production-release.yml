@@ -32,11 +32,8 @@ jobs:
           import csv,re
           from pathlib import Path
           s=Path('/tmp/final.kicad_pcb').read_text()
-
           def blocks(text, token):
-              out=[]
-              pat=re.compile(r'(?m)^([ \t]*)\('+re.escape(token)+r'\b')
-              pos=0
+              out=[]; pat=re.compile(r'(?m)^([ \t]*)\('+re.escape(token)+r'\b'); pos=0
               while True:
                   m=pat.search(text,pos)
                   if not m: break
@@ -52,43 +49,29 @@ jobs:
                           elif c=='(': d+=1
                           elif c==')':
                               d-=1
-                              if d==0:
-                                  out.append(text[st:i+1]); pos=i+1; break
+                              if d==0: out.append(text[st:i+1]); pos=i+1; break
                   else: raise SystemExit(f'unclosed {token}')
               return out
-
           board={}
           for b in blocks(s,'footprint'):
               refm=re.search(r'\(property "Reference" "([^"]+)"',b)
               if not refm or not re.search(r'\(pad\s+"[^"]*"\s+smd\b',b): continue
-              atm=re.search(r'\(at\s+([-0-9.]+)\s+([-0-9.]+)(?:\s+([-0-9.]+))?\)',b)
-              assert atm, refm.group(1)
+              atm=re.search(r'\(at\s+([-0-9.]+)\s+([-0-9.]+)(?:\s+([-0-9.]+))?\)',b); assert atm
               board[refm.group(1)]=(float(atm.group(1)),float(atm.group(2)),float(atm.group(3) or 0))
-
-          bom_path='fixtures/esp32_robot_carrier/BOM_JLCPCB.csv'
-          cpl_path='fixtures/esp32_robot_carrier/CPL_JLCPCB.csv'
           bom_refs=[]
-          with open(bom_path,newline='') as f:
+          with open('fixtures/esp32_robot_carrier/BOM_JLCPCB.csv',newline='') as f:
               for r in csv.DictReader(f):
                   assert r['LCSC Part #'].startswith('C') and r['LCSC Part #'][1:].isdigit(), r
                   bom_refs += [x.strip() for x in r['Designator'].split(',')]
           cpl={}
-          with open(cpl_path,newline='') as f:
-              for r in csv.DictReader(f):
-                  cpl[r['Designator']]=(float(r['Mid X'].replace('mm','')),float(r['Mid Y'].replace('mm','')),float(r['Rotation']))
-
-          assert len(board)==36, f'expected 36 SMT footprints, found {len(board)}'
-          assert len(bom_refs)==len(set(bom_refs))==36, 'BOM duplicate/missing designators'
-          assert len(cpl)==36, f'expected 36 CPL rows, found {len(cpl)}'
-          assert set(board)==set(bom_refs)==set(cpl), f'reference mismatch board-only={set(board)-set(cpl)} cpl-only={set(cpl)-set(board)}'
-          for ref,actual in board.items():
-              expected=cpl[ref]
-              assert all(abs(a-b)<0.001 for a,b in zip(actual,expected)), f'{ref} placement PCB={actual} CPL={expected}'
-
-          # Explicitly protect the final design contract.
+          with open('fixtures/esp32_robot_carrier/CPL_JLCPCB.csv',newline='') as f:
+              for r in csv.DictReader(f): cpl[r['Designator']]=(float(r['Mid X'].replace('mm','')),float(r['Mid Y'].replace('mm','')),float(r['Rotation']))
+          assert len(board)==36 and len(bom_refs)==len(set(bom_refs))==36 and len(cpl)==36
+          assert set(board)==set(bom_refs)==set(cpl)
+          for ref,actual in board.items(): assert all(abs(a-b)<0.001 for a,b in zip(actual,cpl[ref])), (ref,actual,cpl[ref])
           assert {'Q1','Q2','Q3','Q4'} <= set(board)
-          assert 'C3' in board and board['C3']==(72.5,100.5,0.0)
-          assert 'C4' not in board, 'C4 must remain hand-soldered THT, not SMT CPL'
+          assert board['C3']==(72.5,100.5,0.0)
+          assert 'C4' not in board
           print('BOM/CPL PASS: 36/36 SMT refs and placements exactly match final PCB')
           PY
 
@@ -116,38 +99,19 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p artifacts/gerbers
-          kicad-cli pcb export gerbers \
-            --layers 'F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,F.Paste,Edge.Cuts' \
-            --check-zones \
-            --output artifacts/gerbers/ \
-            /tmp/final.kicad_pcb
-          kicad-cli pcb export drill \
-            --format excellon \
-            --excellon-units mm \
-            --generate-map --map-format gerber \
-            --output artifacts/gerbers/ \
-            /tmp/final.kicad_pcb
-
-          # Reject incomplete fab packages.
-          for pattern in '*F_Cu*' '*B_Cu*' '*F_Mask*' '*B_Mask*' '*F_Silkscreen*' '*B_Silkscreen*' '*Edge_Cuts*' '*.drl'; do
-            test -n "$(find artifacts/gerbers -maxdepth 1 -type f -name "$pattern" -print -quit)" || { echo "Missing $pattern"; exit 1; }
+          kicad-cli pcb export gerbers --layers 'F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,F.Paste,Edge.Cuts' --check-zones --output artifacts/gerbers/ /tmp/final.kicad_pcb
+          kicad-cli pcb export drill --format excellon --excellon-units mm --output artifacts/gerbers/ /tmp/final.kicad_pcb
+          echo 'Gerbers:'
+          find artifacts/gerbers -maxdepth 1 -type f -printf '%f\n' | sort
+          for ext in gtl gbl gts gbs gto gbo gtp gm1 drl; do
+            test -n "$(find artifacts/gerbers -maxdepth 1 -type f -name "*.$ext" -print -quit)" || { echo "Missing .$ext"; exit 1; }
           done
-          test -n "$(find artifacts/gerbers -maxdepth 1 -type f -name '*F_Paste*' -print -quit)" || { echo 'Missing F.Paste for SMT assembly'; exit 1; }
-
           cp /tmp/final.kicad_pcb artifacts/esp32_robot_carrier_v2_FINAL.kicad_pcb
           cp fixtures/esp32_robot_carrier/BOM_JLCPCB.csv artifacts/BOM_JLCPCB.csv
           cp fixtures/esp32_robot_carrier/CPL_JLCPCB.csv artifacts/CPL_JLCPCB.csv
-          printf '%s\n' \
-            'JLCPCB ORDER NOTES' \
-            '- PCB input is regulated 5V only. Never connect the 36-42V battery to this carrier.' \
-            '- C4 is a hand-soldered polarized 470uF 16V radial capacitor, 5mm lead spacing. Positive pad is marked +.' \
-            '- ESP32 module/socket headers, sensor/field connectors, enable jumpers and other through-hole connectors are hand-soldered unless separately ordered for THT assembly.' \
-            '- BOM/CPL cover exactly the 36 SMT components.' \
-            > artifacts/ORDER_NOTES.txt
+          printf '%s\n' 'JLCPCB ORDER NOTES' '- PCB input is regulated 5V only. Never connect the 36-42V battery to this carrier.' '- C4 is a hand-soldered polarized 470uF 16V radial capacitor, 5mm lead spacing. Positive pad is marked +.' '- ESP32 module/socket headers, sensor/field connectors, enable jumpers and other through-hole connectors are hand-soldered unless separately ordered for THT assembly.' '- BOM/CPL cover exactly the 36 SMT components.' > artifacts/ORDER_NOTES.txt
           (cd artifacts/gerbers && zip -q ../esp32_robot_carrier_v2_GERBERS_JLCPCB.zip ./*)
           (cd artifacts && zip -q esp32_robot_carrier_v2_COMPLETE_ORDER.zip esp32_robot_carrier_v2_GERBERS_JLCPCB.zip BOM_JLCPCB.csv CPL_JLCPCB.csv ORDER_NOTES.txt esp32_robot_carrier_v2_FINAL.kicad_pcb drc.json)
-          echo 'Gerbers:'
-          find artifacts/gerbers -maxdepth 1 -type f -printf '%f\n' | sort
 
       - name: Upload complete JLCPCB order package
         uses: actions/upload-artifact@v4
