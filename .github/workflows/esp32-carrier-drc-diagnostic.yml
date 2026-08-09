@@ -1,0 +1,49 @@
+name: Diagnose ESP32 carrier native DRC
+
+on:
+  pull_request:
+    paths:
+      - 'fixtures/esp32_robot_carrier/**'
+      - '.github/workflows/esp32-carrier-drc-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruct exact board
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb.gz.b64 | gunzip > fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb
+          echo 'd76be0c4625d4a34c3e5a09d863da20c15aa4491002270aa1ff017080ce78dda  fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb' | sha256sum -c -
+      - name: Install KiCad 10
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y kicad
+          kicad-cli --version
+      - name: Capture native DRC reports
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p artifacts
+          BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb
+          kicad-cli pcb drc --severity-all --all-track-errors --output artifacts/drc.rpt "$BOARD"
+          kicad-cli pcb drc --severity-all --all-track-errors --format json --output artifacts/drc.json "$BOARD"
+          echo '===== NATIVE KICAD DRC REPORT ====='
+          cat artifacts/drc.rpt
+          echo '===== SUMMARY ====='
+          grep -E '^\*\*|violation|unconnected|Violation|Unconnected' artifacts/drc.rpt | tail -100 || true
+      - name: Upload diagnostic reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32-carrier-native-drc-diagnostic
+          path: artifacts
+          if-no-files-found: error
