@@ -46,6 +46,7 @@ jobs:
           missing=[x for x in required if x not in s]
           assert not missing, f'missing required PCB contract items: {missing}'
           nets=set(re.findall(r'\(net\s+"([^"]+)"\)',s))
+          nets.update(re.findall(r'\(net\s+\d+\s+"([^"]+)"\)',s))
           for n in [
             '+5V','+3V3','GND',
             'L_BRAKE_GPIO','L_BRAKE_GATE','L_BRAKE_SW','L_BRAKE_CONN',
