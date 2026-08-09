@@ -1,0 +1,63 @@
+name: Validate ESP32 carrier PCB
+
+on:
+  push:
+    paths:
+      - 'fixtures/esp32_robot_carrier/**'
+      - 'scripts/validate-esp32-carrier.mjs'
+      - '.github/workflows/esp32-carrier-validation.yml'
+  pull_request:
+    paths:
+      - 'fixtures/esp32_robot_carrier/**'
+      - 'scripts/validate-esp32-carrier.mjs'
+      - '.github/workflows/esp32-carrier-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install KiCanvas dependencies
+        run: npm ci
+
+      - name: Validate carrier electrical contract
+        run: node scripts/validate-esp32-carrier.mjs
+
+      - name: Typecheck KiCanvas
+        run: npm run lint:types
+
+      - name: Build KiCanvas
+        run: npm run build:no-check
+
+      - name: Install KiCad CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y kicad
+
+      - name: Run native KiCad DRC
+        run: |
+          mkdir -p artifacts
+          kicad-cli pcb drc --exit-code-violations --output artifacts/drc.rpt fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb
+
+      - name: Generate Gerbers and drill files
+        run: |
+          mkdir -p artifacts/gerbers
+          kicad-cli pcb gerbers -o artifacts/gerbers/ fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb
+          kicad-cli pcb drill -o artifacts/gerbers/ fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb
+
+      - name: Upload fabrication validation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32-carrier-validation
+          path: artifacts
+          if-no-files-found: error
