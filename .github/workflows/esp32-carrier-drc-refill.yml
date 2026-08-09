@@ -1,0 +1,45 @@
+name: Diagnose ESP32 carrier DRC with zone refill
+
+on:
+  pull_request:
+    paths:
+      - 'fixtures/esp32_robot_carrier/**'
+      - '.github/workflows/esp32-carrier-drc-refill.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruct exact board
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb.gz.b64 | gunzip > fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb
+          echo 'd76be0c4625d4a34c3e5a09d863da20c15aa4491002270aa1ff017080ce78dda  fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb' | sha256sum -c -
+      - name: Install KiCad 10
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y kicad
+      - name: Refill zones and capture DRC JSON
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p artifacts
+          BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb
+          kicad-cli pcb drc --refill-zones --save-board --severity-all --all-track-errors --format json --output artifacts/drc.json "$BOARD"
+          kicad-cli pcb drc --refill-zones --severity-all --all-track-errors --output artifacts/drc.rpt "$BOARD"
+          cat artifacts/drc.rpt
+          cp "$BOARD" artifacts/refilled-board.kicad_pcb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: esp32-carrier-drc-refilled
+          path: artifacts
+          if-no-files-found: error
