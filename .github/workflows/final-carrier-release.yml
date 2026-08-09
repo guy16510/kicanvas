@@ -30,6 +30,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
+          import re
           s=Path('/tmp/final.kicad_pcb').read_text()
           required=[
             'ESP32 ROBOT CARRIER v2','5V INPUT ONLY','5V ONLY - NO 36/42V BATTERY',
@@ -43,9 +44,19 @@ jobs:
             '3V3 RAIL 1','3V3 RAIL 2','3V3 RAIL 3','3V3 RAIL 4','74AHCT1G125','20k','10k'
           ]
           missing=[x for x in required if x not in s]
-          assert not missing, missing
-          assert '(net "+5V")' in s and '(net "+3V3")' in s and '(net "GND")' in s
-          print('carrier contract OK')
+          assert not missing, f'missing required PCB contract items: {missing}'
+          nets=set(re.findall(r'\(net\s+\d+\s+"([^"]+)"\)',s))
+          for n in ['+5V','+3V3','GND','LEFT_BRAKE_OUT','RIGHT_BRAKE_OUT','LEFT_REVERSE_OUT','RIGHT_REVERSE_OUT']:
+              assert n in nets, f'missing net {n}'
+          # Four independent 2N7002 channels, no shared brake/reverse transistor.
+          qrefs=re.findall(r'\(property "Reference" "(Q\d+)"',s)
+          assert len(set(qrefs)) == 4, f'expected 4 unique MOSFETs, found {sorted(set(qrefs))}'
+          assert s.count('2N7002') >= 4, 'expected four 2N7002 MOSFET footprints'
+          for gpio in ['GPIO33','GPIO32','GPIO27','GPIO14']:
+              assert gpio in s, f'missing independent control {gpio}'
+          # RGB must include local decoupling/bulk capacitance metadata and level shifter.
+          assert '74AHCT1G125' in s
+          print('carrier contract OK, nets',len(nets),'MOSFETs',sorted(set(qrefs)))
           PY
 
       - name: Install KiCad 10
@@ -63,10 +74,10 @@ jobs:
           kicad-cli pcb drc --severity-all --all-track-errors --refill-zones --format json --output artifacts/drc.json /tmp/final.kicad_pcb
           python3 - <<'PY'
           import json
+          from collections import Counter
           d=json.load(open('artifacts/drc.json'))
           print('violations',len(d['violations']),'unconnected',len(d['unconnected_items']))
           if d['violations'] or d['unconnected_items']:
-              from collections import Counter
               print(Counter(x['type'] for x in d['violations']))
               raise SystemExit(1)
           PY
