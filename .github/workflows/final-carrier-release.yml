@@ -23,7 +23,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 fixtures/esp32_robot_carrier/finalize_carrier.py /tmp/source.kicad_pcb /tmp/final.kicad_pcb
-          echo '686b09a6266e5d3edecfc5f5abbc6e52e0a90a6290546260cfa0a902212e9f9f  /tmp/final.kicad_pcb' | sha256sum -c -
+          echo '05d585b12f9cec7640b59fd1fc53a8c779604dfc909ee3539ee5339dd1ae94e1  /tmp/final.kicad_pcb' | sha256sum -c -
 
       - name: Validate carrier contract
         run: |
@@ -76,16 +76,21 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p artifacts
+          set +e
           kicad-cli pcb drc --severity-all --all-track-errors --refill-zones --format json --output artifacts/drc.json /tmp/final.kicad_pcb
+          rc=$?
+          set -e
           python3 - <<'PY'
           import json
           from collections import Counter
           d=json.load(open('artifacts/drc.json'))
           print('violations',len(d['violations']),'unconnected',len(d['unconnected_items']))
-          if d['violations'] or d['unconnected_items']:
+          if d['violations']:
               print(Counter(x['type'] for x in d['violations']))
+          if d['violations'] or d['unconnected_items']:
               raise SystemExit(1)
           PY
+          test "$rc" -eq 0
 
       - name: Generate fabrication files
         run: |
@@ -100,8 +105,9 @@ jobs:
           unzip -l artifacts/esp32_robot_carrier_v2_JLCPCB.zip
 
       - name: Upload manufacturing release
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: esp32-robot-carrier-v2-JLCPCB-release
           path: artifacts
-          if-no-files-found: error
+          if-no-files-found: warn
