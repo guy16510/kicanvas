@@ -24,6 +24,8 @@ jobs:
           set -euo pipefail
           python3 fixtures/esp32_robot_carrier/finalize_carrier.py /tmp/source.kicad_pcb /tmp/final.kicad_pcb
           echo '115f2eef607307a9be8ac29ba2bc9eb4d7db52efe347948da75c225dc191dcd3  /tmp/final.kicad_pcb' | sha256sum -c -
+          python3 fixtures/esp32_robot_carrier/declare_manufacturing_layers.py /tmp/final.kicad_pcb /tmp/manufacturing.kicad_pcb
+          echo '75ba0dbfd2935e7c4af2e295b3e52c2d983bba4a2fcbd3d37a5d51b08c40c3e2  /tmp/manufacturing.kicad_pcb' | sha256sum -c -
 
       - name: Validate BOM and CPL against final PCB
         run: |
@@ -31,7 +33,9 @@ jobs:
           python3 - <<'PY'
           import csv,re
           from pathlib import Path
-          s=Path('/tmp/final.kicad_pcb').read_text()
+          s=Path('/tmp/manufacturing.kicad_pcb').read_text()
+          for required in ['(34 "B.Paste" user)','(35 "F.Paste" user)','(38 "B.Mask" user)','(39 "F.Mask" user)']:
+              assert required in s, required
           def blocks(text, token):
               out=[]; pat=re.compile(r'(?m)^([ \t]*)\('+re.escape(token)+r'\b'); pos=0
               while True:
@@ -72,7 +76,7 @@ jobs:
           assert {'Q1','Q2','Q3','Q4'} <= set(board)
           assert board['C3']==(72.5,100.5,0.0)
           assert 'C4' not in board
-          print('BOM/CPL PASS: 36/36 SMT refs and placements exactly match final PCB')
+          print('BOM/CPL PASS: 36/36 SMT refs and placements exactly match manufacturing PCB')
           PY
 
       - name: Install KiCad 10
@@ -87,7 +91,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p artifacts
-          kicad-cli pcb drc --severity-all --all-track-errors --refill-zones --format json --output artifacts/drc.json /tmp/final.kicad_pcb
+          kicad-cli pcb drc --severity-all --all-track-errors --refill-zones --format json --output artifacts/drc.json /tmp/manufacturing.kicad_pcb
           python3 - <<'PY'
           import json
           d=json.load(open('artifacts/drc.json'))
@@ -99,14 +103,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p artifacts/gerbers
-          kicad-cli pcb export gerbers --layers 'F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,F.Paste,Edge.Cuts' --check-zones --output artifacts/gerbers/ /tmp/final.kicad_pcb
-          kicad-cli pcb export drill --format excellon --excellon-units mm --output artifacts/gerbers/ /tmp/final.kicad_pcb
+          kicad-cli pcb export gerbers --layers 'F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,F.Paste,Edge.Cuts' --check-zones --output artifacts/gerbers/ /tmp/manufacturing.kicad_pcb
+          kicad-cli pcb export drill --format excellon --excellon-units mm --output artifacts/gerbers/ /tmp/manufacturing.kicad_pcb
           echo 'Gerbers:'
           find artifacts/gerbers -maxdepth 1 -type f -printf '%f\n' | sort
           for ext in gtl gbl gts gbs gto gbo gtp gm1 drl; do
             test -n "$(find artifacts/gerbers -maxdepth 1 -type f -name "*.$ext" -print -quit)" || { echo "Missing .$ext"; exit 1; }
           done
-          cp /tmp/final.kicad_pcb artifacts/esp32_robot_carrier_v2_FINAL.kicad_pcb
+          cp /tmp/manufacturing.kicad_pcb artifacts/esp32_robot_carrier_v2_FINAL.kicad_pcb
           cp fixtures/esp32_robot_carrier/BOM_JLCPCB.csv artifacts/BOM_JLCPCB.csv
           cp fixtures/esp32_robot_carrier/CPL_JLCPCB.csv artifacts/CPL_JLCPCB.csv
           printf '%s\n' 'JLCPCB ORDER NOTES' '- PCB input is regulated 5V only. Never connect the 36-42V battery to this carrier.' '- C4 is a hand-soldered polarized 470uF 16V radial capacitor, 5mm lead spacing. Positive pad is marked +.' '- ESP32 module/socket headers, sensor/field connectors, enable jumpers and other through-hole connectors are hand-soldered unless separately ordered for THT assembly.' '- BOM/CPL cover exactly the 36 SMT components.' > artifacts/ORDER_NOTES.txt
