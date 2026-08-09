@@ -23,7 +23,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 fixtures/esp32_robot_carrier/finalize_carrier.py /tmp/source.kicad_pcb /tmp/final.kicad_pcb
-          echo '05d585b12f9cec7640b59fd1fc53a8c779604dfc909ee3539ee5339dd1ae94e1  /tmp/final.kicad_pcb' | sha256sum -c -
+          echo '52d0c9edaf3eb31d638c76ef147b1d8b40238388a584746bd6523b3f35a0c667  /tmp/final.kicad_pcb' | sha256sum -c -
 
       - name: Validate carrier contract
         run: |
@@ -41,7 +41,7 @@ jobs:
             'LEFT THROTTLE / GPIO25','RIGHT THROTTLE / GPIO26','LEFT BRAKE / GPIO33','RIGHT BRAKE / GPIO32',
             'LEFT REVERSE / GPIO27','RIGHT REVERSE / GPIO14','SERVO / GPIO13','ARM AUX / GPIO12','ARM AUX / GPIO2',
             'MPU6050 SDA / GPIO4','MPU6050 SCL / GPIO23','RGB LIGHTS','RGB DATA = GPIO2 -> 5V AHCT BUFFER',
-            '3V3 RAIL 1','3V3 RAIL 2','3V3 RAIL 3','3V3 RAIL 4','74AHCT1G125','20k','10k'
+            '3V3 RAIL 1','3V3 RAIL 2','3V3 RAIL 3','3V3 RAIL 4','74AHCT1G125','470uF 16V','20k','10k'
           ]
           missing=[x for x in required if x not in s]
           assert not missing, f'missing required PCB contract items: {missing}'
@@ -61,7 +61,8 @@ jobs:
           for gpio in ['GPIO33','GPIO32','GPIO27','GPIO14']:
               assert gpio in s, f'missing independent control {gpio}'
           assert '74AHCT1G125' in s, 'missing RGB 5V level shifter'
-          print('carrier contract OK, nets',len(nets),'MOSFETs',sorted(set(qrefs)))
+          assert '(property "Reference" "C4"' in s and '470uF 16V' in s, 'missing RGB bulk capacitor'
+          print('carrier contract OK, nets',len(nets),'MOSFETs',sorted(set(qrefs)),'RGB bulk C4 OK')
           PY
 
       - name: Install KiCad 10
