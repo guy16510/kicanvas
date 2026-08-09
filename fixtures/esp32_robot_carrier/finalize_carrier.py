@@ -130,6 +130,17 @@ new+='''  (footprint "C_Radial_5mm_RGB_Bulk" (layer "F.Cu") (at 80.0 103.0)
 # C4 positive goes directly to the RGB +5V output pad, avoiding the nearby JP4G ground pad.
 new+=seg('82.5 103.0','88.0 103.0','0.80','B.Cu',2)
 
+# Move the final human labels that native KiCad identified as overlapping.
+label_moves={
+    '(gr_text "R BRAKE ENABLE" (at 18.5 35.6)': '(gr_text "R BRAKE ENABLE" (at 36 35.6)',
+    '(gr_text "R REVERSE ENABLE" (at 18.5 65.6)': '(gr_text "R REVERSE ENABLE" (at 36 65.6)',
+    '(gr_text "ESP32 VIN <- 5V   |   ESP32 3V3 -> 3V3 RAILS   |   COMMON GND" (at 63 10.5)': '(gr_text "ESP32 VIN <- 5V   |   ESP32 3V3 -> 3V3 RAILS   |   COMMON GND" (at 63 13)',
+    '(gr_text "5V ONLY - NO 36/42V BATTERY" (at 60 95.5)': '(gr_text "5V ONLY - NO 36/42V BATTERY" (at 60 84.5)',
+    '(gr_text "PI GND" (at 66 101.5)': '(gr_text "PI GND" (at 61.5 101.5)',
+}
+for a,b in label_moves.items():
+    s=s.replace(a,b,1)
+
 # Insert all generated objects as children of the root kicad_pcb expression.
 insert_at=s.rfind('\n)')
 if insert_at < 0 or not s.lstrip().startswith('(kicad_pcb'):
@@ -137,7 +148,7 @@ if insert_at < 0 or not s.lstrip().startswith('(kicad_pcb'):
 s=s[:insert_at+1]+new+s[insert_at+1:]
 out.write_text(s)
 sha=hashlib.sha256(out.read_bytes()).hexdigest()
-EXPECTED_OUT='cf93a52ef23733b5ccc39e66f88d0eeba0eef8c538e0c10eb3b08805d21c5a17'
+EXPECTED_OUT='3081ad9f4f2dd3dd22d0d82d2000a149e45859c197085c549902ffcde95cb8e3'
 print('final board sha256',sha)
 if sha!=EXPECTED_OUT:
     raise SystemExit('final board SHA mismatch')
