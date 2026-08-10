@@ -1,0 +1,20 @@
+name: Inspect ESP32 carrier fixture
+
+on:
+  pull_request:
+    paths:
+      - 'fixtures/esp32_robot_carrier/**'
+      - 'scripts/introspect-esp32-carrier-v2.mjs'
+      - '.github/workflows/esp32-carrier-introspect.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dump carrier geometry and connectivity
+        run: node scripts/introspect-esp32-carrier-v2.mjs
