@@ -9,6 +9,7 @@ on:
       - 'scripts/route-esp32-carrier-v3-clean.mjs'
       - 'scripts/route-esp32-carrier-v3-drc2.mjs'
       - 'scripts/route-esp32-carrier-v3-drc3.mjs'
+      - 'scripts/route-esp32-carrier-v3-drc4.mjs'
       - '.github/workflows/esp32-carrier-v3-validation.yml'
   workflow_dispatch:
 
@@ -22,7 +23,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Generate production carrier v3 from exact v2 fixture
-        run: node scripts/route-esp32-carrier-v3-drc3.mjs
+        run: node scripts/route-esp32-carrier-v3-drc4.mjs
 
       - name: Install KiCad 10
         run: |
