@@ -36,7 +36,7 @@ const footprintBlocks = blocks(text, '(footprint');
 const footprints = footprintBlocks.map((block) => {
   const ref = block.match(/\(property\s+"Reference"\s+"([^"]+)"/)?.[1] ?? '?';
   const value = block.match(/\(property\s+"Value"\s+"([^"]+)"/)?.[1] ?? '?';
-  const atMatch = block.match(/\n\s*\(at\s+([-\d.]+)\s+([-\d.]+)(?:\s+([-\d.]+))?\)/);
+  const atMatch = block.match(/^\(footprint[^\n]*\(at\s+([-\d.]+)\s+([-\d.]+)(?:\s+([-\d.]+))?\)/);
   const at = atMatch ? [Number(atMatch[1]), Number(atMatch[2]), Number(atMatch[3] ?? 0)] : [];
   const pads = [...block.matchAll(/\(pad\s+"([^"]*)"[\s\S]*?\(net\s+(\d+)\s+"([^"]+)"\)/g)].map((m) => ({
     pad: m[1],
@@ -46,14 +46,9 @@ const footprints = footprintBlocks.map((block) => {
   return { ref, value, at, pads };
 });
 
-const relevant = footprints.filter((f) =>
-  /^(R|C|Q|U|L|D|F|J|JP)/.test(f.ref) ||
-  /HALL|ECHO|THROTTLE|BRAKE|REVERSE|5V|3V3|GND|ESP|RGB|SERVO/i.test(`${f.ref} ${f.value}`)
-);
-
+const edgeCuts = text.split('\n').filter((line) => line.includes('Edge.Cuts'));
 const edgePoints = [];
-for (const line of text.split('\n')) {
-  if (!line.includes('Edge.Cuts')) continue;
+for (const line of edgeCuts) {
   for (const m of line.matchAll(/\((?:start|end|center|mid)\s+([-\d.]+)\s+([-\d.]+)\)/g)) {
     edgePoints.push([Number(m[1]), Number(m[2])]);
   }
@@ -82,9 +77,10 @@ const segments = blocks(text, '(segment').filter((block) =>
 console.log(JSON.stringify({
   bytes: Buffer.byteLength(text),
   bbox,
+  edgeCuts,
   netCount: netNames.size,
   nets: [...netNames.entries()].sort((a, b) => a[0] - b[0]),
-  footprints: relevant,
+  footprintOccupancy: footprints.map(({ref, value, at}) => ({ref, value, at})),
   rawBlocks,
   relevantSegments: segments,
 }, null, 2));
