@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - 'fixtures/esp32_robot_carrier/**'
-      - 'scripts/generate-esp32-carrier-v3.mjs'
+      - 'scripts/generate-esp32-carrier-v3-production.mjs'
       - '.github/workflows/esp32-carrier-v3-validation.yml'
   workflow_dispatch:
 
@@ -17,8 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate carrier v3 from exact v2 fixture
-        run: node scripts/generate-esp32-carrier-v3.mjs
+      - name: Generate production carrier v3 from exact v2 fixture
+        run: node scripts/generate-esp32-carrier-v3-production.mjs
 
       - name: Install KiCad 10
         run: |
@@ -26,21 +26,24 @@ jobs:
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y kicad
 
-      - name: Parse and refill board
+      - name: Parse, refill, and capture DRC
         run: |
           set -uo pipefail
-          mkdir -p artifacts/gerbers
+          mkdir -p artifacts/gerbers artifacts/renderings
           BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
           kicad-cli pcb drc --refill-zones --save-board --severity-all --all-track-errors --format json --output artifacts/drc.json "$BOARD" || true
           kicad-cli pcb drc --refill-zones --severity-all --all-track-errors --output artifacts/drc.rpt "$BOARD" || true
           cat artifacts/drc.rpt || true
           cp "$BOARD" artifacts/esp32_robot_carrier_v3.kicad_pcb
 
-      - name: Generate fabrication outputs for inspection
+      - name: Generate fabrication outputs and SVG renderings
         run: |
+          set -u
           BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
-          kicad-cli pcb gerbers -o artifacts/gerbers/ "$BOARD" || true
-          kicad-cli pcb drill -o artifacts/gerbers/ "$BOARD" || true
+          kicad-cli pcb export gerbers -o artifacts/gerbers/ "$BOARD"
+          kicad-cli pcb export drill -o artifacts/gerbers/ "$BOARD"
+          kicad-cli pcb export svg -o artifacts/renderings/front.svg --layers F.Cu,F.Mask,F.Silkscreen,Edge.Cuts "$BOARD"
+          kicad-cli pcb export svg -o artifacts/renderings/back.svg --layers B.Cu,B.Mask,B.Silkscreen,Edge.Cuts --mirror "$BOARD"
 
       - uses: actions/upload-artifact@v4
         with:
