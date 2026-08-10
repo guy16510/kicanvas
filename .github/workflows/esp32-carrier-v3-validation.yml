@@ -1,0 +1,49 @@
+name: Validate ESP32 carrier v3
+
+on:
+  pull_request:
+    paths:
+      - 'fixtures/esp32_robot_carrier/**'
+      - 'scripts/generate-esp32-carrier-v3.mjs'
+      - '.github/workflows/esp32-carrier-v3-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-v3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate carrier v3 from exact v2 fixture
+        run: node scripts/generate-esp32-carrier-v3.mjs
+
+      - name: Install KiCad 10
+        run: |
+          sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y kicad
+
+      - name: Parse and refill board
+        run: |
+          set -uo pipefail
+          mkdir -p artifacts/gerbers
+          BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
+          kicad-cli pcb drc --refill-zones --save-board --severity-all --all-track-errors --format json --output artifacts/drc.json "$BOARD" || true
+          kicad-cli pcb drc --refill-zones --severity-all --all-track-errors --output artifacts/drc.rpt "$BOARD" || true
+          cat artifacts/drc.rpt || true
+          cp "$BOARD" artifacts/esp32_robot_carrier_v3.kicad_pcb
+
+      - name: Generate fabrication outputs for inspection
+        run: |
+          BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
+          kicad-cli pcb gerbers -o artifacts/gerbers/ "$BOARD" || true
+          kicad-cli pcb drill -o artifacts/gerbers/ "$BOARD" || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: esp32-carrier-v3-diagnostics
+          path: artifacts
+          if-no-files-found: error
