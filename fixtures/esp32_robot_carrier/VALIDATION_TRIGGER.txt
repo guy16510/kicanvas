@@ -1,0 +1,1 @@
+Final ESP32 carrier validation trigger. This branch exists only to force a pull_request Actions run against the exact SHA-verified PCB fixture.

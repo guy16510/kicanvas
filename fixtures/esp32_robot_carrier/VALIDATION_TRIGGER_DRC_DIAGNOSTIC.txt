@@ -1,0 +1,1 @@
+Trigger complete native KiCad DRC diagnostic report capture.

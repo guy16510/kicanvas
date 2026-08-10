@@ -1,0 +1,125 @@
+name: JLCPCB production release
+
+on:
+  pull_request:
+    paths:
+      - 'fixtures/esp32_robot_carrier/**'
+      - '.github/workflows/jlcpcb-production-release.yml'
+  workflow_dispatch:
+
+jobs:
+  production:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reconstruct exact source board
+        run: |
+          set -euo pipefail
+          base64 -d fixtures/esp32_robot_carrier/esp32_robot_carrier_v2.kicad_pcb.gz.b64 | gunzip > /tmp/source.kicad_pcb
+          echo 'd76be0c4625d4a34c3e5a09d863da20c15aa4491002270aa1ff017080ce78dda  /tmp/source.kicad_pcb' | sha256sum -c -
+
+      - name: Generate exact final board
+        run: |
+          set -euo pipefail
+          python3 fixtures/esp32_robot_carrier/finalize_carrier.py /tmp/source.kicad_pcb /tmp/final.kicad_pcb
+          echo '115f2eef607307a9be8ac29ba2bc9eb4d7db52efe347948da75c225dc191dcd3  /tmp/final.kicad_pcb' | sha256sum -c -
+          python3 fixtures/esp32_robot_carrier/declare_manufacturing_layers.py /tmp/final.kicad_pcb /tmp/manufacturing.kicad_pcb
+          echo '75ba0dbfd2935e7c4af2e295b3e52c2d983bba4a2fcbd3d37a5d51b08c40c3e2  /tmp/manufacturing.kicad_pcb' | sha256sum -c -
+
+      - name: Validate BOM and CPL against final PCB
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import csv,re
+          from pathlib import Path
+          s=Path('/tmp/manufacturing.kicad_pcb').read_text()
+          for required in ['(34 "B.Paste" user)','(35 "F.Paste" user)','(38 "B.Mask" user)','(39 "F.Mask" user)']:
+              assert required in s, required
+          def blocks(text, token):
+              out=[]; pat=re.compile(r'(?m)^([ \t]*)\('+re.escape(token)+r'\b'); pos=0
+              while True:
+                  m=pat.search(text,pos)
+                  if not m: break
+                  st=m.start()+len(m.group(1)); d=0; ins=False; esc=False
+                  for i in range(st,len(text)):
+                      c=text[i]
+                      if ins:
+                          if esc: esc=False
+                          elif c=='\\': esc=True
+                          elif c=='"': ins=False
+                      else:
+                          if c=='"': ins=True
+                          elif c=='(': d+=1
+                          elif c==')':
+                              d-=1
+                              if d==0: out.append(text[st:i+1]); pos=i+1; break
+                  else: raise SystemExit(f'unclosed {token}')
+              return out
+          board={}
+          for b in blocks(s,'footprint'):
+              refm=re.search(r'\(property "Reference" "([^"]+)"',b)
+              if not refm or not re.search(r'\(pad\s+"[^"]*"\s+smd\b',b): continue
+              atm=re.search(r'\(at\s+([-0-9.]+)\s+([-0-9.]+)(?:\s+([-0-9.]+))?\)',b); assert atm
+              board[refm.group(1)]=(float(atm.group(1)),float(atm.group(2)),float(atm.group(3) or 0))
+          bom_refs=[]
+          with open('fixtures/esp32_robot_carrier/BOM_JLCPCB.csv',newline='') as f:
+              for r in csv.DictReader(f):
+                  assert r['LCSC Part #'].startswith('C') and r['LCSC Part #'][1:].isdigit(), r
+                  bom_refs += [x.strip() for x in r['Designator'].split(',')]
+          cpl={}
+          with open('fixtures/esp32_robot_carrier/CPL_JLCPCB.csv',newline='') as f:
+              for r in csv.DictReader(f): cpl[r['Designator']]=(float(r['Mid X'].replace('mm','')),float(r['Mid Y'].replace('mm','')),float(r['Rotation']))
+          assert len(board)==36 and len(bom_refs)==len(set(bom_refs))==36 and len(cpl)==36
+          assert set(board)==set(bom_refs)==set(cpl)
+          for ref,actual in board.items(): assert all(abs(a-b)<0.001 for a,b in zip(actual,cpl[ref])), (ref,actual,cpl[ref])
+          assert {'Q1','Q2','Q3','Q4'} <= set(board)
+          assert board['C3']==(72.5,100.5,0.0)
+          assert 'C4' not in board
+          print('BOM/CPL PASS: 36/36 SMT refs and placements exactly match manufacturing PCB')
+          PY
+
+      - name: Install KiCad 10
+        run: |
+          set -euo pipefail
+          sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y kicad
+          kicad-cli --version
+
+      - name: Native KiCad DRC
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          kicad-cli pcb drc --severity-all --all-track-errors --refill-zones --format json --output artifacts/drc.json /tmp/manufacturing.kicad_pcb
+          python3 - <<'PY'
+          import json
+          d=json.load(open('artifacts/drc.json'))
+          print('DRC violations',len(d['violations']),'unconnected',len(d['unconnected_items']))
+          assert not d['violations'] and not d['unconnected_items']
+          PY
+
+      - name: Export explicit JLCPCB fabrication layers
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/gerbers
+          kicad-cli pcb export gerbers --layers 'F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,F.Paste,Edge.Cuts' --check-zones --output artifacts/gerbers/ /tmp/manufacturing.kicad_pcb
+          kicad-cli pcb export drill --format excellon --excellon-units mm --output artifacts/gerbers/ /tmp/manufacturing.kicad_pcb
+          echo 'Gerbers:'
+          find artifacts/gerbers -maxdepth 1 -type f -printf '%f\n' | sort
+          for ext in gtl gbl gts gbs gto gbo gtp gm1 drl; do
+            test -n "$(find artifacts/gerbers -maxdepth 1 -type f -name "*.$ext" -print -quit)" || { echo "Missing .$ext"; exit 1; }
+          done
+          cp /tmp/manufacturing.kicad_pcb artifacts/esp32_robot_carrier_v2_FINAL.kicad_pcb
+          cp fixtures/esp32_robot_carrier/BOM_JLCPCB.csv artifacts/BOM_JLCPCB.csv
+          cp fixtures/esp32_robot_carrier/CPL_JLCPCB.csv artifacts/CPL_JLCPCB.csv
+          printf '%s\n' 'JLCPCB ORDER NOTES' '- PCB input is regulated 5V only. Never connect the 36-42V battery to this carrier.' '- C4 is a hand-soldered polarized 470uF 16V radial capacitor, 5mm lead spacing. Positive pad is marked +.' '- ESP32 module/socket headers, sensor/field connectors, enable jumpers and other through-hole connectors are hand-soldered unless separately ordered for THT assembly.' '- BOM/CPL cover exactly the 36 SMT components.' > artifacts/ORDER_NOTES.txt
+          (cd artifacts/gerbers && zip -q ../esp32_robot_carrier_v2_GERBERS_JLCPCB.zip ./*)
+          (cd artifacts && zip -q esp32_robot_carrier_v2_COMPLETE_ORDER.zip esp32_robot_carrier_v2_GERBERS_JLCPCB.zip BOM_JLCPCB.csv CPL_JLCPCB.csv ORDER_NOTES.txt esp32_robot_carrier_v2_FINAL.kicad_pcb drc.json)
+
+      - name: Upload complete JLCPCB order package
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32-robot-carrier-v2-COMPLETE-JLCPCB-ORDER
+          path: artifacts
+          if-no-files-found: error
