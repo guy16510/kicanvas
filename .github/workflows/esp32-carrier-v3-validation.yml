@@ -1,0 +1,62 @@
+name: Validate ESP32 carrier v3
+
+on:
+  pull_request:
+    paths:
+      - 'fixtures/esp32_robot_carrier/**'
+      - 'scripts/generate-esp32-carrier-v3-production.mjs'
+      - 'scripts/finalize-esp32-carrier-v3.mjs'
+      - 'scripts/route-esp32-carrier-v3-clean.mjs'
+      - 'scripts/route-esp32-carrier-v3-drc2.mjs'
+      - 'scripts/route-esp32-carrier-v3-drc3.mjs'
+      - 'scripts/route-esp32-carrier-v3-drc4.mjs'
+      - 'scripts/route-esp32-carrier-v3-drc5.mjs'
+      - 'scripts/route-esp32-carrier-v3-drc6.mjs'
+      - 'scripts/validate-esp32-carrier-v3-drc.mjs'
+      - '.github/workflows/esp32-carrier-v3-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-v3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate production carrier v3 from exact v2 fixture
+        run: node scripts/route-esp32-carrier-v3-drc6.mjs
+
+      - name: Install KiCad 10
+        run: |
+          sudo add-apt-repository --yes ppa:kicad/kicad-10.0-releases
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y kicad
+
+      - name: Parse and refill board
+        run: |
+          set -uo pipefail
+          mkdir -p artifacts/gerbers artifacts/renderings
+          BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
+          kicad-cli pcb drc --refill-zones --save-board --severity-all --all-track-errors --format json --output artifacts/drc.json "$BOARD" || true
+          kicad-cli pcb drc --refill-zones --severity-all --all-track-errors --output artifacts/drc.rpt "$BOARD" || true
+          cp "$BOARD" artifacts/esp32_robot_carrier_v3.kicad_pcb
+
+      - name: Reject new carrier-v3 electrical DRC issues
+        run: node scripts/validate-esp32-carrier-v3-drc.mjs artifacts/drc.json
+
+      - name: Generate fabrication outputs and SVG renderings
+        run: |
+          set -u
+          BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
+          kicad-cli pcb export gerbers -o artifacts/gerbers/ "$BOARD"
+          kicad-cli pcb export drill -o artifacts/gerbers/ "$BOARD"
+          kicad-cli pcb export svg -o artifacts/renderings/front.svg --layers F.Cu,F.Mask,F.Silkscreen,Edge.Cuts "$BOARD"
+          kicad-cli pcb export svg -o artifacts/renderings/back.svg --layers B.Cu,B.Mask,B.Silkscreen,Edge.Cuts --mirror "$BOARD"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: esp32-carrier-v3-production
+          path: artifacts
+          if-no-files-found: error
