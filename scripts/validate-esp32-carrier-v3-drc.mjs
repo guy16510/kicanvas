@@ -10,9 +10,14 @@ const critical = new Set([
     "tracks_crossing",
     "clearance",
     "hole_clearance",
+    "holes_co_located",
     "solder_mask_bridge",
     "track_dangling",
     "via_dangling",
+    "silk_edge_clearance",
+    "silk_over_copper",
+    "silk_overlap",
+    "text_height",
 ]);
 const markers = [
     "BAT_RAW",
@@ -64,18 +69,37 @@ const markers = [
     "J_PI_PWR",
     "FB2",
     "J_SERVO",
+    "F1",
+    "F2",
+    "JP_ESP_PWR",
+    "BATTERY_ADC_GPIO34",
+    "BATTERY_DIVIDER_MID",
+    "FRONT_ECHO_GPIO",
+    "R40",
+    "R41",
+    "R42",
+    "C20",
+    "U_TRIG_L",
+    "U_TRIG_F",
+    "U_TRIG_R",
+    "C21",
+    "C22",
+    "C23",
 ];
 const text = (entry) =>
     (entry.items ?? []).map((item) => item.description ?? "").join(" ");
 const isNew = (entry) => markers.some((marker) => text(entry).includes(marker));
+// A production carrier cannot inherit electrical shorts, crossings, dangling
+// copper, or open connections from the v2 fixture. Keep marker matching above
+// for diagnostics, but fail the gate on the complete generated board.
 const electrical = report.violations.filter(
-    (entry) => critical.has(entry.type) && isNew(entry),
+    (entry) => entry.severity !== "exclusion",
 );
-const unconnected = report.unconnected_items.filter(isNew);
+const unconnected = report.unconnected_items;
 
 if (electrical.length || unconnected.length) {
     console.error(
-        `carrier v3 has ${electrical.length} new critical DRC violation(s) and ${unconnected.length} new unconnected item(s)`,
+        `carrier v3 has ${electrical.length} critical DRC violation(s) and ${unconnected.length} unconnected item(s)`,
     );
     for (const entry of [...electrical, ...unconnected]) {
         console.error(`${entry.type}: ${text(entry)}`);
@@ -83,5 +107,5 @@ if (electrical.length || unconnected.length) {
     process.exit(1);
 }
 console.log(
-    "carrier v3 electrical DRC gate: 0 new critical violations, 0 new unconnected items",
+    "carrier v3 electrical DRC gate: 0 critical violations, 0 unconnected items",
 );

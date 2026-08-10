@@ -1,10 +1,45 @@
-Comment,Designator,Footprint,LCSC Part #
-100R,"R10,R12,R16,R18",0805,C2889469
-100k,"R9,R11,R15,R17",0805,C2889441
-10k,"R1,R3,R5,R7,R19,R21,R23,R25,R27",0805,C2889436
-20k,"R2,R4,R6,R8,R20,R22,R24,R26,R28",0805,C465476
-1k,"R13,R14",0805,C2889437
-1uF,"C1,C2",0805,C28323
-2N7002,"Q1,Q2,Q3,Q4",SOT-23,C8545
-74AHCT1G125,U_RGB,SOT-23-5,C842287
-100nF,C3,0805,C3863412
+Comment,Designator,Footprint,LCSC Part #,Manufacturer,Manufacturer Part Number,Assembly Notes
+"1uF 25V X7R","C1,C2",0805,,Murata,GRM21BR71E105KA99L,SMT
+"1uF 50V X7R","C18,C25",1210,,KEMET,C1210C105K5RACTU,SMT; local module output bypass capacitors
+"100nF 25V X7R","C3,C20,C21,C22,C23,C27",0805,,Murata,GRM21BR71E104KA01L,SMT
+"10nF_HALL_RC 25V C0G","C4,C5,C6,C7,C8,C9",0805,,KEMET,C0805C103J3GACTU,SMT
+"22uF 100V low-ESR","C10,C26",CP_Radial_D8_P3.5,,Panasonic,EEUFC2A220,Hand/THT; exact 8mm body and 3.5mm lead pitch
+"4.7uF 100V X7R","C11",1210,,TDK,C3225X7S2A475K250AB,SMT; verify DC-bias curve
+"470uF 10V low-ESR","C16",CP_Radial_D8_P3.5,,Panasonic,EEUFR1A471,Hand/THT; exact 8mm body and 3.5mm lead pitch
+"470uF 50V low-ESR","C19",CP_Radial_D12.5_P5,,Panasonic,EEUFR1H471,Hand/THT; 24V servo rail; exact 12.5mm body and 5mm lead pitch
+"1000uF 10V low-ESR RGB bulk","C24",CP_Radial_D10_P5,,Panasonic,EEU-FS1A102,Hand/THT; polarized; positive pad marked +
+"SMCJ48A TVS","D1",SMC,,Littelfuse,SMCJ48A,SMT; unidirectional
+"SMBJ26A 26V TVS","D2",SMB,,Littelfuse,SMBJ26A,SMT; unidirectional; cathode pad 1 to fused 24V servo rail
+"5x20 fuse holder","F1,F2,F3",0PTF0015P,,Littelfuse,0PTF0015P,Hand/THT; fuse links ordered separately
+"5A time-delay ceramic fuse 400VDC","F1_LINK,F2_LINK",5x20_cartridge,,Eaton Bussmann,S505H-5-R,Hand install; F1 is shared converter input and F2 is Pi branch; 1500A interrupt rating at 400VDC
+"3.15A time-delay ceramic fuse 400VDC","F3_LINK",5x20_cartridge,,Eaton Bussmann,S505H-3.15-R,Hand install in F3 holder; dedicated 24V servo branch
+"120R@100MHz 6A ferrite","FB2",1206,,Murata,BLM31KN121SN1L,SMT; 6A at 85C, 4A at 125C, 9mOhm max DCR
+"36-42V battery terminal","J_BAT",PTH_2x1_5.00mm,,Phoenix Contact,1935161,Hand/THT; exact 5.00mm pitch; 17.5A nominal terminal rating
+"ESP32 socket 1x15","J_ESP_L,J_ESP_R",PinSocket_1x15_P2.54mm,,Samtec,SSW-115-01-G-S,Hand/THT; two required
+"Mini-Fit Jr 2x2 vertical","J_PI_PWR",MiniFitJr_2x2,,Molex,0039281043,Hand/THT; mate/housing/contacts separate
+"24V servo header 1x3","J_SERVO",PinHeader_1x03_P2.54mm,,Samtec,TSW-103-07-G-S,Hand/THT; signal / fused 24V / GND; 2.5A converter limit shared with J_24V_AUX
+"3.50mm terminal 1x2","J_24V_AUX,J_LBRK,J_LREV,J_RBRK,J_RREV",TerminalBlock_1x02_P3.50mm,,Phoenix Contact,1984617,Hand/THT; J_24V_AUX shares the fused 2.5A servo budget; controller contacts are floating
+"Enable header 1x2","JP_LBRK,JP_LREV,JP_RBRK,JP_RREV",PinHeader_1x02_P2.54mm,,Samtec,TSW-102-07-G-S,Hand/THT; add removable shunts
+"100V N-MOSFET","Q5,Q6",TO-220,,STMicroelectronics,STP100N10F7,Hand/THT; inspect orientation and insulate as required
+"330R_PHOTOMOS_LED 1pct","R10,R12,R16,R18",0805,,Yageo,RC0805FR-07330RL,SMT
+"330R output/data 1pct","R43,R45,R48",0805,,Yageo,RC0805FR-07330RL,SMT; RGB damping and throttle output fault limiting
+"1k 1pct","R13,R14",0805,,Yageo,RC0805FR-071KL,SMT
+"10k 1pct","R1,R3,R5,R7,R19,R21,R23,R25,R27,R51,R52",0805,,Yageo,RC0805FR-0710KL,SMT
+"12k_1pct_HALL","R2,R20,R22,R24,R26,R28",0805,,Yageo,RC0805FR-0712KL,SMT
+"15k_1pct_ULTRASONIC","R4,R6,R8",0805,,Yageo,RC0805FR-0715KL,SMT
+"20k 1pct BAT ADC","R42",0805,,Yageo,RC0805FR-0720KL,SMT
+"22k 1pct throttle gain","R47,R50",0805,,Yageo,RC0805FR-0722KL,SMT
+"6.04k 1pct throttle gain","R46,R49",0805,,Yageo,RC0805FR-076K04L,SMT
+"37.4k 1pct","R36",0805,,Yageo,RC0805FR-0737K4L,SMT
+"49.9k 1pct","R35",0805,,Yageo,RC0805FR-0749K9L,SMT
+"100k 1pct","R9,R11,R15,R17,R29,R30,R53",0805,,Yageo,RC0805FR-07100KL,SMT; R53 holds the 24V servo signal inactive during ESP32 reset
+"240k 1pct","R40,R41",0805,,Yageo,RC0805FR-07240KL,SMT; >=50V working voltage
+"470k 1pct","R39",0805,,Yageo,RC0805FR-07470KL,SMT
+"806k 1pct UWS trim-up","R44",0805,,Yageo,RC0805FR-07806KL,SMT; sets nominal 5V rail to approximately 5.10V per Murata trim equation
+"2.45M 1pct","R37,R38",0805,,Yageo,RC0805FR-072M45L,SMT; series pair shares surge voltage
+"74AHCT1G125 5V buffer","U_RGB,U_TRIG_L,U_TRIG_F,U_TRIG_R",SOT-23-5,C842287,Texas Instruments,SN74AHCT1G125DBVR,SMT; DBV pinout required
+"Dual rail-to-rail throttle op amp","U10",SOIC-8,,Texas Instruments,TLV9002IDR,SMT; standard D-package pinout; 5V supply; both channels gain 1.2745
+"60V 0.5A PhotoMOS floating contact","U6,U7,U8,U9",SOP-4,,Panasonic Industry,AQY212SX,SMT; 5mA LED drive; 1.5kVrms I/O isolation
+"LTC4367 overvoltage controller","U4",MSOP-8,,Analog Devices,LTC4367IMS8#PBF,SMT
+"5V isolated DC-DC module","PS1",Murata_UWS_Q48_THT,,Murata Power Solutions,UWS-5/10-Q48N-C,Hand/THT; 18-75V input; 8A low-line; 5.10V trim limits high-line output to 9.8A/50W; negative-logic enable
+"24V 2.5A isolated DC-DC module","PS2",Traco_TEN60WIN_THT,,Traco Power,TEN 60-4815WIN,Hand/THT; active 60W module; 18-75V input; passive-on remote

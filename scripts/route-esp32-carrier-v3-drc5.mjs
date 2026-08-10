@@ -63,7 +63,7 @@ const r = [];
 // then returns to F.Cu for the whole lower lane. Q5 stays F.Cu. Q6 changes to
 // B.Cu at x=70, well clear of C10 and the protected-VIN vertical at x=59.62.
 r.push(
-    seg(39.2, 118.05, 40, 117, 0.25, "F.Cu", 55),
+    seg(39.2, 119.025, 40, 117, 0.25, "F.Cu", 55),
     via(40, 117, 55),
     seg(40, 117, 40, 136, 0.25, "B.Cu", 55),
     via(40, 136, 55),

@@ -74,6 +74,19 @@ function smd2({
   )`;
 }
 
+function smcj48a() {
+    return `(footprint "D_SMC_DO-214AB" (layer "F.Cu") (at 27 126)
+    (property "Reference" "D1" (at 0 -4.2 0) (layer "F.SilkS"))
+    (property "Value" "SMCJ48A_TVS" (at 0 4.2 0) (layer "F.Fab") hide)
+    (fp_line (start -3.8 -3.2) (end 3.8 -3.2) (stroke (width 0.2) (type default)) (layer "F.SilkS"))
+    (fp_line (start -3.8 3.2) (end 3.8 3.2) (stroke (width 0.2) (type default)) (layer "F.SilkS"))
+    (fp_line (start -1.6 -3.2) (end -1.6 -2.55) (stroke (width 0.4) (type default)) (layer "F.SilkS"))
+    (fp_rect (start -3.6 -3.1) (end 3.6 3.1) (stroke (width 0.15) (type default)) (fill none) (layer "F.Fab"))
+    (pad "1" smd roundrect (at -3.4 0) (size 2.5 3.3) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1) (net 54 "BAT_FUSED"))
+    (pad "2" smd roundrect (at 3.4 0) (size 2.5 3.3) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1) (net 3 "GND"))
+  )`;
+}
+
 function pth2({ ref, value, x, y, n1, s1, n2 = 3, s2 = "GND", pitch = 5.08 }) {
     return `(footprint "PTH2_${pitch}" (layer "F.Cu") (at ${x} ${y})
     (property "Reference" "${ref}" (at ${pitch / 2} -3.0 0) (layer "F.SilkS"))
@@ -98,14 +111,14 @@ function ltc4367() {
     (property "Reference" "U4" (at 0 -4.5 0) (layer "F.SilkS"))
     (property "Value" "LTC4367IMS8#PBF" (at 0 4.5 0) (layer "F.Fab") hide)
     (fp_rect (start -2.3 -3.0) (end 2.3 3.0) (stroke (width 0.2) (type default)) (fill none) (layer "F.SilkS"))
-    (pad "1" smd roundrect (at -2.2 -1.95) (size 1.6 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 54 "BAT_FUSED"))
-    (pad "2" smd roundrect (at -2.2 -0.65) (size 1.6 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 59 "UV_SENSE"))
-    (pad "3" smd roundrect (at -2.2 0.65) (size 1.6 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 58 "OV_SENSE"))
-    (pad "4" smd roundrect (at -2.2 1.95) (size 1.6 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 3 "GND"))
-    (pad "5" smd roundrect (at 2.2 1.95) (size 1.6 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 65 "PROTECT_SHDN"))
-    (pad "6" smd roundrect (at 2.2 0.65) (size 1.6 0.7) (layers "F.Cu" "F.Paste" "F.Mask"))
-    (pad "7" smd roundrect (at 2.2 -0.65) (size 1.6 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 57 "VIN_PROTECTED"))
-    (pad "8" smd roundrect (at 2.2 -1.95) (size 1.6 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 55 "PROTECT_GATE"))
+    (pad "1" smd roundrect (at -2.2 -0.975) (size 1.35 0.45) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 54 "BAT_FUSED"))
+    (pad "2" smd roundrect (at -2.2 -0.325) (size 1.35 0.45) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 59 "UV_SENSE"))
+    (pad "3" smd roundrect (at -2.2 0.325) (size 1.35 0.45) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 58 "OV_SENSE"))
+    (pad "4" smd roundrect (at -2.2 0.975) (size 1.35 0.45) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 3 "GND"))
+    (pad "5" smd roundrect (at 2.2 0.975) (size 1.35 0.45) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 65 "PROTECT_SHDN"))
+    (pad "6" smd roundrect (at 2.2 0.325) (size 1.35 0.45) (layers "F.Cu" "F.Paste" "F.Mask"))
+    (pad "7" smd roundrect (at 2.2 -0.325) (size 1.35 0.45) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 57 "VIN_PROTECTED"))
+    (pad "8" smd roundrect (at 2.2 -0.975) (size 1.35 0.45) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2) (net 55 "PROTECT_GATE"))
   )`;
 }
 
@@ -161,32 +174,32 @@ function lt8645s() {
     ];
     for (let i = 0; i < 10; i++)
         pads.push(
-            `    (pad "${i + 1}" smd roundrect (at -2.45 ${ys[i]}) (size 1.15 0.38) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2)${net(i + 1)})`,
+            `    (pad "${i + 1}" smd roundrect (at -1.9 ${ys[i]}) (size 0.7 0.3) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2)${net(i + 1)})`,
         );
     const xb = [-1.25, -0.75, -0.25, 0.25, 0.75, 1.25];
     for (let i = 0; i < 6; i++)
         pads.push(
-            `    (pad "${11 + i}" smd roundrect (at ${xb[i]} 3.45) (size 0.38 1.15) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2)${net(11 + i)})`,
+            `    (pad "${11 + i}" smd roundrect (at ${xb[i]} 2.9) (size 0.3 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2)${net(11 + i)})`,
         );
     for (let i = 0; i < 10; i++)
         pads.push(
-            `    (pad "${17 + i}" smd roundrect (at 2.45 ${ys[9 - i]}) (size 1.15 0.38) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2)${net(17 + i)})`,
+            `    (pad "${17 + i}" smd roundrect (at 1.9 ${ys[9 - i]}) (size 0.7 0.3) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2)${net(17 + i)})`,
         );
     const xt = [1.25, 0.75, 0.25, -0.25, -0.75, -1.25];
     for (let i = 0; i < 6; i++)
         pads.push(
-            `    (pad "${27 + i}" smd roundrect (at ${xt[i]} -3.45) (size 0.38 1.15) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2)${net(27 + i)})`,
+            `    (pad "${27 + i}" smd roundrect (at ${xt[i]} -2.9) (size 0.3 0.7) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.2)${net(27 + i)})`,
         );
     for (const [p, x, y] of [
-        [33, -0.7, -1.75],
-        [34, 0.7, -1.75],
-        [35, -0.7, 0],
-        [36, 0.7, 0],
-        [37, -0.7, 1.75],
-        [38, 0.7, 1.75],
+        [33, -0.6625, -1.55],
+        [34, 0.6625, -1.55],
+        [35, -0.6625, 0],
+        [36, 0.6625, 0],
+        [37, -0.6625, 1.55],
+        [38, 0.6625, 1.55],
     ])
         pads.push(
-            `    (pad "${p}" smd rect (at ${x} ${y}) (size 1.15 1.25) (layers "F.Cu" "F.Paste" "F.Mask")${net(p)})`,
+            `    (pad "${p}" smd rect (at ${x} ${y}) (size 1.125 1.35) (layers "F.Cu" "F.Paste" "F.Mask")${net(p)})`,
         );
     return `(footprint "LT8645S_LQFN32_6x4_ADI" (layer "F.Cu") (at 78 126)
     (property "Reference" "U5" (at 0 -5.0 0) (layer "F.SilkS"))
@@ -200,9 +213,9 @@ function inductor() {
     return `(footprint "XEL6060" (layer "F.Cu") (at 78 138)
     (property "Reference" "L1" (at 4.5 0 0) (layer "F.SilkS"))
     (property "Value" "2.7uH_XEL6060" (at 0 0 0) (layer "F.Fab") hide)
-    (fp_rect (start -3.4 -4.5) (end 3.4 4.5) (stroke (width 0.25) (type default)) (fill none) (layer "F.SilkS"))
-    (pad "1" smd roundrect (at 0 -3.0) (size 5.2 3.0) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1) (net 66 "PWR_SW"))
-    (pad "2" smd roundrect (at 0 3.0) (size 5.2 3.0) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1) (net 2 "+5V"))
+    (fp_rect (start -3.4 -3.5) (end 3.4 3.5) (stroke (width 0.25) (type default)) (fill none) (layer "F.SilkS"))
+    (pad "1" smd roundrect (at 0 -2.02) (size 5.5 1.43) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1) (net 66 "PWR_SW"))
+    (pad "2" smd roundrect (at 0 2.02) (size 5.5 1.43) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1) (net 2 "+5V"))
   )`;
 }
 
@@ -210,11 +223,11 @@ function piPower() {
     return `(footprint "MiniFitJr_2x2" (layer "F.Cu") (at 111 143)
     (property "Reference" "J_PI_PWR" (at 2.1 -4.2 0) (layer "F.SilkS"))
     (property "Value" "5.1V_8A_TO_PI" (at 2.1 8.2 0) (layer "F.Fab") hide)
-    (fp_rect (start -2.2 -2.2) (end 6.4 6.4) (stroke (width 0.3) (type default)) (fill none) (layer "F.SilkS"))
-    (pad "1" thru_hole rect (at 0 0) (size 3.0 3.0) (drill 1.4) (layers "*.Cu" "*.Mask") (net 2 "+5V"))
-    (pad "2" thru_hole circle (at 4.2 0) (size 3.0 3.0) (drill 1.4) (layers "*.Cu" "*.Mask") (net 2 "+5V"))
-    (pad "3" thru_hole circle (at 0 4.2) (size 3.0 3.0) (drill 1.4) (layers "*.Cu" "*.Mask") (net 3 "GND"))
-    (pad "4" thru_hole circle (at 4.2 4.2) (size 3.0 3.0) (drill 1.4) (layers "*.Cu" "*.Mask") (net 3 "GND"))
+    (fp_rect (start -2.2 -2.2) (end 6.4 7.7) (stroke (width 0.3) (type default)) (fill none) (layer "F.SilkS"))
+    (pad "1" thru_hole roundrect (at 0 0) (size 2.7 3.3) (drill 1.4) (layers "*.Cu" "*.Mask") (roundrect_rratio 0.1) (net 2 "+5V"))
+    (pad "2" thru_hole oval (at 4.2 0) (size 2.7 3.3) (drill 1.4) (layers "*.Cu" "*.Mask") (net 2 "+5V"))
+    (pad "3" thru_hole circle (at 0 5.5) (size 2.7 3.3) (drill 1.4) (layers "*.Cu" "*.Mask") (net 3 "GND"))
+    (pad "4" thru_hole circle (at 4.2 5.5) (size 2.7 3.3) (drill 1.4) (layers "*.Cu" "*.Mask") (net 3 "GND"))
   )`;
 }
 
@@ -331,6 +344,7 @@ const parts = [
         y: 118,
         n1: 53,
         s1: "BAT_RAW",
+        pitch: 5,
     }),
     smd2({
         ref: "F1",
@@ -345,19 +359,7 @@ const parts = [
         sx: 2.4,
         sy: 3.2,
     }),
-    smd2({
-        ref: "D1",
-        value: "SMCJ48A_TVS",
-        x: 27,
-        y: 126,
-        n1: 54,
-        s1: "BAT_FUSED",
-        n2: 3,
-        s2: "GND",
-        span: 2.5,
-        sx: 2.8,
-        sy: 3.8,
-    }),
+    smcj48a(),
     ltc4367(),
     smd2({
         ref: "R35",
@@ -452,9 +454,9 @@ const parts = [
         s1: "VIN_PROTECTED",
         n2: 3,
         s2: "GND",
-        span: 1.5,
-        sx: 1.8,
-        sy: 1.8,
+        span: 1.475,
+        sx: 1.15,
+        sy: 2.7,
     }),
     smd2({
         ref: "C12",
@@ -529,7 +531,7 @@ const parts = [
     }),
     smd2({
         ref: "C15",
-        value: "4.7pF_FF",
+        value: "2.2pF_FF",
         x: 64,
         y: 118,
         n1: 2,
@@ -540,7 +542,7 @@ const parts = [
     inductor(),
     radial({
         ref: "C16",
-        value: "100uF_10V_OUTPUT",
+        value: "470uF_10V_OUTPUT",
         x: 91,
         y: 144,
         n1: 2,
@@ -548,35 +550,35 @@ const parts = [
     }),
     smd2({
         ref: "C17",
-        value: "22uF_10V_X7R",
+        value: "47uF_10V_X7R",
         x: 99,
         y: 143,
         n1: 2,
         s1: "+5V",
         n2: 3,
         s2: "GND",
-        span: 1.5,
-        sx: 1.8,
-        sy: 1.8,
+        span: 1.475,
+        sx: 1.15,
+        sy: 2.7,
     }),
     smd2({
         ref: "C18",
-        value: "22uF_10V_X7R",
+        value: "47uF_10V_X7R",
         x: 104,
         y: 143,
         n1: 2,
         s1: "+5V",
         n2: 3,
         s2: "GND",
-        span: 1.5,
-        sx: 1.8,
-        sy: 1.8,
+        span: 1.475,
+        sx: 1.15,
+        sy: 2.7,
     }),
     piPower(),
     servoHeader(),
     smd2({
         ref: "FB2",
-        value: "5A_FERRITE_SERVO",
+        value: "6A_120R_FERRITE_SERVO",
         x: 18,
         y: 90,
         n1: 2,
@@ -620,27 +622,27 @@ const routes = [
     // 36-42V input and fuse.
     seg(7, 118, 18, 118, 1.5, "F.Cu", 53, "BAT_RAW"),
     seg(22, 118, 51.54, 118, 1.5, "F.Cu", 54, "BAT_FUSED"),
-    seg(24.5, 126, 24.5, 118, 1.0, "F.Cu", 54, "BAT_FUSED"),
+    seg(23.6, 126, 23.6, 118, 1.0, "F.Cu", 54, "BAT_FUSED"),
 
     // LTC4367 sensing and control.
-    seg(34.8, 118.05, 31, 118.05, 0.35, "F.Cu", 54, "BAT_FUSED"),
-    seg(31, 118.05, 31, 132.9, 0.35, "F.Cu", 54, "BAT_FUSED"),
+    seg(34.8, 119.025, 31, 119.025, 0.35, "F.Cu", 54, "BAT_FUSED"),
+    seg(31, 119.025, 31, 132.9, 0.35, "F.Cu", 54, "BAT_FUSED"),
     seg(31, 132.9, 26.9, 134, 0.35, "F.Cu", 54, "BAT_FUSED"),
     seg(29.1, 134, 32.9, 134, 0.25, "F.Cu", 58, "OV_SENSE"),
-    seg(34.8, 120.65, 32, 120.65, 0.25, "F.Cu", 58, "OV_SENSE"),
-    seg(32, 120.65, 32, 134, 0.25, "F.Cu", 58, "OV_SENSE"),
+    seg(34.8, 120.325, 32, 120.325, 0.25, "F.Cu", 58, "OV_SENSE"),
+    seg(32, 120.325, 32, 134, 0.25, "F.Cu", 58, "OV_SENSE"),
     seg(35.1, 134, 38.4, 134, 0.25, "F.Cu", 59, "UV_SENSE"),
-    seg(34.8, 119.35, 33, 119.35, 0.25, "F.Cu", 59, "UV_SENSE"),
-    seg(33, 119.35, 33, 133.2, 0.25, "F.Cu", 59, "UV_SENSE"),
+    seg(34.8, 119.675, 33, 119.675, 0.25, "F.Cu", 59, "UV_SENSE"),
+    seg(33, 119.675, 33, 133.2, 0.25, "F.Cu", 59, "UV_SENSE"),
     seg(33, 133.2, 35.1, 134, 0.25, "F.Cu", 59, "UV_SENSE"),
     seg(41.6, 134, 44.4, 134, 0.25, "F.Cu", 67, "UV_LOW_MID"),
-    seg(41.2, 121.95, 41.9, 121.95, 0.25, "F.Cu", 65, "PROTECT_SHDN"),
-    seg(41.9, 121.95, 41.9, 126, 0.25, "F.Cu", 65, "PROTECT_SHDN"),
-    seg(39.2, 118.05, 49, 116, 0.35, "F.Cu", 55, "PROTECT_GATE"),
+    seg(39.2, 120.975, 41.9, 120.975, 0.25, "F.Cu", 65, "PROTECT_SHDN"),
+    seg(41.9, 120.975, 41.9, 126, 0.25, "F.Cu", 65, "PROTECT_SHDN"),
+    seg(39.2, 119.025, 49, 116, 0.35, "F.Cu", 55, "PROTECT_GATE"),
     seg(49, 116, 62.16, 116, 0.35, "F.Cu", 55, "PROTECT_GATE"),
     seg(49, 116, 49, 118, 0.35, "F.Cu", 55, "PROTECT_GATE"),
     seg(62.16, 116, 62.16, 118, 0.35, "F.Cu", 55, "PROTECT_GATE"),
-    seg(39.2, 119.35, 59.62, 119.35, 0.35, "F.Cu", 57, "VIN_PROTECTED"),
+    seg(39.2, 119.675, 59.62, 119.675, 0.35, "F.Cu", 57, "VIN_PROTECTED"),
     seg(54.08, 118, 57.08, 118, 1.5, "F.Cu", 56, "FET_COMMON"),
 
     // protected VIN to regulator and local input capacitors.
@@ -648,38 +650,38 @@ const routes = [
     seg(59.62, 128, 64, 132, 1.2, "F.Cu", 57, "VIN_PROTECTED"),
     seg(59.62, 122, 66.9, 126, 1.2, "F.Cu", 57, "VIN_PROTECTED"),
     seg(66.9, 126, 70.9, 126, 1.0, "F.Cu", 57, "VIN_PROTECTED"),
-    seg(73.1, 126, 75.55, 125.75, 0.8, "F.Cu", 57, "VIN_PROTECTED"),
-    seg(75.55, 125.25, 75.55, 126.25, 0.8, "F.Cu", 57, "VIN_PROTECTED"),
-    seg(80.45, 125.25, 80.45, 126.25, 0.8, "F.Cu", 57, "VIN_PROTECTED"),
-    seg(80.45, 125.75, 82.9, 126, 0.8, "F.Cu", 57, "VIN_PROTECTED"),
+    seg(73.1, 126, 76.1, 125.75, 0.8, "F.Cu", 57, "VIN_PROTECTED"),
+    seg(76.1, 125.25, 76.1, 126.25, 0.8, "F.Cu", 57, "VIN_PROTECTED"),
+    seg(79.9, 125.25, 79.9, 126.25, 0.8, "F.Cu", 57, "VIN_PROTECTED"),
+    seg(79.9, 125.75, 82.9, 126, 0.8, "F.Cu", 57, "VIN_PROTECTED"),
     seg(82.9, 126, 82.9, 122, 0.8, "F.Cu", 57, "VIN_PROTECTED"),
     seg(82.9, 122, 59.62, 122, 0.8, "F.Cu", 57, "VIN_PROTECTED"),
 
     // LT8645S control pins.
-    seg(80.45, 124.25, 84.9, 120, 0.25, "F.Cu", 60, "PWR_EN"),
-    seg(80.45, 123.75, 84.9, 124, 0.25, "F.Cu", 61, "PWR_RT"),
-    seg(78.25, 122.55, 78.25, 118, 0.25, "F.Cu", 63, "PWR_SS"),
+    seg(79.9, 124.25, 84.9, 120, 0.25, "F.Cu", 60, "PWR_EN"),
+    seg(79.9, 123.75, 84.9, 124, 0.25, "F.Cu", 61, "PWR_RT"),
+    seg(78.25, 123.1, 78.25, 118, 0.25, "F.Cu", 63, "PWR_SS"),
     seg(78.25, 118, 78.9, 118, 0.25, "F.Cu", 63, "PWR_SS"),
-    seg(76.75, 122.55, 72, 122, 0.25, "F.Cu", 62, "PWR_FB"),
+    seg(76.75, 123.1, 72, 122, 0.25, "F.Cu", 62, "PWR_FB"),
     seg(72, 122, 71.1, 122, 0.25, "F.Cu", 62, "PWR_FB"),
     seg(68.9, 122, 65.1, 118, 0.25, "F.Cu", 62, "PWR_FB"),
-    seg(78.75, 122.55, 78.75, 121.5, 0.35, "F.Cu", 3, "GND"),
-    seg(77.75, 122.55, 77.75, 121.5, 0.35, "F.Cu", 3, "GND"),
+    seg(78.75, 123.1, 78.75, 121.5, 0.35, "F.Cu", 3, "GND"),
+    seg(77.75, 123.1, 77.75, 121.5, 0.35, "F.Cu", 3, "GND"),
 
     // switch node into inductor, compact and isolated from feedback.
-    seg(76.75, 129.45, 78, 135, 0.65, "F.Cu", 66, "PWR_SW"),
-    seg(77.25, 129.45, 78, 135, 0.65, "F.Cu", 66, "PWR_SW"),
-    seg(77.75, 129.45, 78, 135, 0.65, "F.Cu", 66, "PWR_SW"),
-    seg(78.25, 129.45, 78, 135, 0.65, "F.Cu", 66, "PWR_SW"),
-    seg(78.75, 129.45, 78, 135, 0.65, "F.Cu", 66, "PWR_SW"),
-    seg(79.25, 129.45, 78, 135, 0.65, "F.Cu", 66, "PWR_SW"),
+    seg(76.75, 128.9, 78, 135.98, 0.65, "F.Cu", 66, "PWR_SW"),
+    seg(77.25, 128.9, 78, 135.98, 0.65, "F.Cu", 66, "PWR_SW"),
+    seg(77.75, 128.9, 78, 135.98, 0.65, "F.Cu", 66, "PWR_SW"),
+    seg(78.25, 128.9, 78, 135.98, 0.65, "F.Cu", 66, "PWR_SW"),
+    seg(78.75, 128.9, 78, 135.98, 0.65, "F.Cu", 66, "PWR_SW"),
+    seg(79.25, 128.9, 78, 135.98, 0.65, "F.Cu", 66, "PWR_SW"),
 
     // low-current +5V feed back into existing carrier bus and to BIAS/feedback network.
-    seg(78, 141, 92, 141, 2.0, "B.Cu", 2, "+5V"),
+    seg(78, 140.02, 92, 141, 2.0, "B.Cu", 2, "+5V"),
     seg(92, 141, 126, 141, 2.0, "B.Cu", 2, "+5V"),
     seg(126, 141, 126, 92, 2.0, "B.Cu", 2, "+5V"),
     seg(126, 92, 42, 92, 2.0, "B.Cu", 2, "+5V"),
-    seg(75.55, 123.75, 72, 116, 0.3, "B.Cu", 2, "+5V"),
+    seg(76.1, 123.75, 72, 116, 0.3, "B.Cu", 2, "+5V"),
     seg(72, 116, 68.9, 118, 0.3, "B.Cu", 2, "+5V"),
     seg(72, 116, 64, 116, 0.3, "B.Cu", 2, "+5V"),
     seg(64, 116, 62.9, 118, 0.3, "B.Cu", 2, "+5V"),
@@ -701,14 +703,14 @@ const vias = [
     via(87.1, 124, 3, "GND"),
     via(81.1, 118, 3, "GND"),
     via(71.1, 122, 3, "GND"),
-    via(74, 129.75, 3, "GND"),
-    via(82, 129.75, 3, "GND"),
-    via(77.3, 124.25, 3, "GND", 0.9, 0.45),
-    via(78.7, 124.25, 3, "GND", 0.9, 0.45),
-    via(77.3, 126, 3, "GND", 0.9, 0.45),
-    via(78.7, 126, 3, "GND", 0.9, 0.45),
-    via(77.3, 127.75, 3, "GND", 0.9, 0.45),
-    via(78.7, 127.75, 3, "GND", 0.9, 0.45),
+    via(74, 128, 3, "GND"),
+    via(82, 128, 3, "GND"),
+    via(77.3375, 124.45, 3, "GND", 0.8, 0.4),
+    via(78.6625, 124.45, 3, "GND", 0.8, 0.4),
+    via(77.3375, 126, 3, "GND", 0.8, 0.4),
+    via(78.6625, 126, 3, "GND", 0.8, 0.4),
+    via(77.3375, 127.55, 3, "GND", 0.8, 0.4),
+    via(78.6625, 127.55, 3, "GND", 0.8, 0.4),
     via(100.1, 143, 3, "GND"),
     via(105.1, 143, 3, "GND"),
     via(27.5, 94, 3, "GND"),
@@ -716,19 +718,19 @@ const vias = [
 ];
 
 const localGround = [
-    seg(34.8, 121.95, 34.2, 122, 0.35, "F.Cu", 3, "GND"),
-    seg(29.5, 126, 31.5, 126, 0.7, "F.Cu", 3, "GND"),
+    seg(34.8, 120.975, 34.2, 122, 0.35, "F.Cu", 3, "GND"),
+    seg(30.4, 126, 31.5, 126, 0.7, "F.Cu", 3, "GND"),
     seg(69.1, 126, 70.1, 126, 0.4, "F.Cu", 3, "GND"),
     seg(85.1, 126, 85.9, 126, 0.4, "F.Cu", 3, "GND"),
     seg(87.1, 124, 87.1, 124, 0.3, "F.Cu", 3, "GND"),
     seg(81.1, 118, 81.1, 118, 0.3, "F.Cu", 3, "GND"),
     seg(71.1, 122, 71.1, 122, 0.3, "F.Cu", 3, "GND"),
-    seg(75.55, 129.25, 74, 129.75, 0.45, "F.Cu", 3, "GND"),
-    seg(75.55, 129.75, 74, 129.75, 0.45, "F.Cu", 3, "GND"),
-    seg(75.55, 130.25, 74, 129.75, 0.45, "F.Cu", 3, "GND"),
-    seg(80.45, 129.25, 82, 129.75, 0.45, "F.Cu", 3, "GND"),
-    seg(80.45, 129.75, 82, 129.75, 0.45, "F.Cu", 3, "GND"),
-    seg(80.45, 130.25, 82, 129.75, 0.45, "F.Cu", 3, "GND"),
+    seg(76.1, 127.25, 74, 128, 0.45, "F.Cu", 3, "GND"),
+    seg(76.1, 127.75, 74, 128, 0.45, "F.Cu", 3, "GND"),
+    seg(76.1, 128.25, 74, 128, 0.45, "F.Cu", 3, "GND"),
+    seg(79.9, 127.25, 82, 128, 0.45, "F.Cu", 3, "GND"),
+    seg(79.9, 127.75, 82, 128, 0.45, "F.Cu", 3, "GND"),
+    seg(79.9, 128.25, 82, 128, 0.45, "F.Cu", 3, "GND"),
     seg(100.1, 143, 100.1, 143, 0.3, "F.Cu", 3, "GND"),
     seg(105.1, 143, 105.1, 143, 0.3, "F.Cu", 3, "GND"),
     seg(27.5, 94, 27.5, 94, 0.3, "F.Cu", 3, "GND"),
