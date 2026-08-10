@@ -32,10 +32,12 @@ for (const m of text.matchAll(/\(net\s+(\d+)\s+"([^"]+)"\)/g)) {
   netNames.set(Number(m[1]), m[2]);
 }
 
-const footprints = blocks(text, '(footprint').map((block) => {
+const footprintBlocks = blocks(text, '(footprint');
+const footprints = footprintBlocks.map((block) => {
   const ref = block.match(/\(property\s+"Reference"\s+"([^"]+)"/)?.[1] ?? '?';
   const value = block.match(/\(property\s+"Value"\s+"([^"]+)"/)?.[1] ?? '?';
-  const at = block.match(/^\(footprint[\s\S]*?\n\s*\(at\s+([-\d.]+)\s+([-\d.]+)(?:\s+[-\d.]+)?\)/)?.slice(1, 3).map(Number) ?? [];
+  const atMatch = block.match(/\n\s*\(at\s+([-\d.]+)\s+([-\d.]+)(?:\s+([-\d.]+))?\)/);
+  const at = atMatch ? [Number(atMatch[1]), Number(atMatch[2]), Number(atMatch[3] ?? 0)] : [];
   const pads = [...block.matchAll(/\(pad\s+"([^"]*)"[\s\S]*?\(net\s+(\d+)\s+"([^"]+)"\)/g)].map((m) => ({
     pad: m[1],
     net: Number(m[2]),
@@ -63,10 +65,26 @@ const bbox = edgePoints.length ? {
   maxY: Math.max(...edgePoints.map((p) => p[1])),
 } : null;
 
+const rawRefs = new Set([
+  'R1','R2','R19','R20','R21','R22','R23','R24','R25','R26','R27','R28',
+  'C3','J5VIN','JGNDIN','JPIOUT5','JPIOUTG','J_ESP_L','J_ESP_R',
+]);
+const rawBlocks = {};
+for (const block of footprintBlocks) {
+  const ref = block.match(/\(property\s+"Reference"\s+"([^"]+)"/)?.[1];
+  if (ref && rawRefs.has(ref)) rawBlocks[ref] = block;
+}
+
+const segments = blocks(text, '(segment').filter((block) =>
+  /\(net\s+(?:1|2|3|4|19|20|23|24|27)\)/.test(block)
+);
+
 console.log(JSON.stringify({
   bytes: Buffer.byteLength(text),
   bbox,
   netCount: netNames.size,
   nets: [...netNames.entries()].sort((a, b) => a[0] - b[0]),
   footprints: relevant,
+  rawBlocks,
+  relevantSegments: segments,
 }, null, 2));
