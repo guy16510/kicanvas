@@ -65,6 +65,8 @@ jobs:
           sudo apt-get install --no-install-recommends -y kicad
 
       - name: Parse, refill zones, and run KiCad DRC
+        id: native_drc
+        continue-on-error: true
         run: |
           set -uo pipefail
           mkdir -p artifacts
@@ -77,6 +79,24 @@ jobs:
           node scripts/validate-esp32-carrier-v3-hand-solder-refined.mjs "$BOARD"
           cp "$BOARD" artifacts/esp32_robot_carrier_v3.kicad_pcb
           cp artifacts/drc.json artifacts/drc.rpt fixtures/esp32_robot_carrier/fabrication_v3/
+
+      - name: Persist failing native DRC report
+        if: steps.native_drc.outcome == 'failure' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          mkdir -p debug
+          cp artifacts/drc.json debug/esp32-carrier-v3-drc.json
+          cp artifacts/drc.rpt debug/esp32-carrier-v3-drc.rpt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add debug/esp32-carrier-v3-drc.json debug/esp32-carrier-v3-drc.rpt
+          if ! git diff --cached --quiet; then
+            git commit -m "debug: persist carrier native DRC report"
+            git push origin "HEAD:${{ github.head_ref }}"
+          fi
+
+      - name: Require native DRC success
+        if: steps.native_drc.outcome == 'failure'
+        run: exit 1
 
       - name: Generate and validate final fabrication package
         run: node scripts/export-esp32-carrier-v3-fabrication.mjs
