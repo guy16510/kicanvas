@@ -39,11 +39,18 @@ if (fs.existsSync(jobPath)) {
     if (specs.LayerNumber !== 2) failures.push("Gerber job must specify 2 layers");
     if (specs.BoardThickness !== 1.6)
         failures.push("Gerber job must specify 1.6 mm board thickness");
+
+    // Hand-solder v3 extends the right edge from x=129 to x=156 mm to create
+    // the dedicated DIP-14 logic/routing bay. KiCad's Gerber job reports the
+    // 0.25 mm Edge.Cuts stroke in its overall size, hence 155.25 x 189.25 mm.
     if (
-        Math.abs((specs.Size?.X ?? 0) - 128.25) > 0.001 ||
+        Math.abs((specs.Size?.X ?? 0) - 155.25) > 0.001 ||
         Math.abs((specs.Size?.Y ?? 0) - 189.25) > 0.001
     )
-        failures.push("Gerber job must describe the 128 x 189 mm board outline");
+        failures.push(
+            `Gerber job must describe the widened 155 x 189 mm hand-solder board outline; got ${specs.Size?.X ?? "?"} x ${specs.Size?.Y ?? "?"} mm`,
+        );
+
     const functions = new Set(
         (job.FilesAttributes ?? []).map((entry) => entry.FileFunction),
     );
@@ -109,6 +116,6 @@ if (failures.length) {
     process.exitCode = 1;
 } else {
     console.log(
-        `ESP32 carrier v3 fabrication package PASS: ${expected.length} required files, 2 layers, 1.6 mm`,
+        `ESP32 carrier v3 fabrication package PASS: ${expected.length} required files, 2 layers, 1.6 mm, widened hand-solder outline`,
     );
 }

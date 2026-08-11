@@ -6,27 +6,79 @@ on:
       - 'fixtures/esp32_robot_carrier/**'
       - 'scripts/generate-esp32-carrier-v3-production.mjs'
       - 'scripts/finalize-esp32-carrier-v3.mjs'
-      - 'scripts/route-esp32-carrier-v3-clean.mjs'
-      - 'scripts/route-esp32-carrier-v3-drc2.mjs'
-      - 'scripts/route-esp32-carrier-v3-drc3.mjs'
-      - 'scripts/route-esp32-carrier-v3-drc4.mjs'
-      - 'scripts/route-esp32-carrier-v3-drc5.mjs'
-      - 'scripts/route-esp32-carrier-v3-drc6.mjs'
-      - 'scripts/validate-esp32-carrier-v3-drc.mjs'
+      - 'scripts/route-esp32-carrier-v3-*.mjs'
+      - 'scripts/add-esp32-carrier-v3-battery-sense.mjs'
+      - 'scripts/apply-esp32-carrier-v3-hand-solder.mjs'
+      - 'scripts/finalize-esp32-carrier-v3-hand-solder.mjs'
+      - 'scripts/refine-esp32-carrier-v3-hand-solder-drc.mjs'
+      - 'scripts/refine-esp32-carrier-v3-hand-solder-drc4.mjs'
+      - 'scripts/refine-esp32-carrier-v3-hand-solder-drc5.mjs'
+      - 'scripts/refine-esp32-carrier-v3-hand-solder-drc6.mjs'
+      - 'scripts/refine-esp32-carrier-v3-hand-solder-drc7.mjs'
+      - 'scripts/refine-esp32-carrier-v3-hand-solder-drc8.mjs'
+      - 'scripts/fix-esp32-carrier-hand-solder-transform.mjs'
+      - 'scripts/inspect-esp32-carrier-v3-final.mjs'
+      - 'scripts/export-esp32-carrier-v3-*.mjs'
+      - 'scripts/validate-esp32-carrier-v3-*.mjs'
       - '.github/workflows/esp32-carrier-v3-validation.yml'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate-v3:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
 
-      - name: Generate production carrier v3 from exact v2 fixture
-        run: node scripts/route-esp32-carrier-v3-drc6.mjs
+      - name: Repair hand-solder transform source if needed
+        run: node scripts/fix-esp32-carrier-hand-solder-transform.mjs
+
+      - name: Restore base-stage BOM for pre-transform system validation
+        run: |
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          if [ -n "$BASE_SHA" ]; then
+            git fetch --no-tags --depth=1 origin "$BASE_SHA"
+            BASE_REF="$BASE_SHA"
+          else
+            git fetch --no-tags --depth=1 origin main
+            BASE_REF="origin/main"
+          fi
+          git show "$BASE_REF:fixtures/esp32_robot_carrier/BOM_JLCPCB.csv" > fixtures/esp32_robot_carrier/BOM_JLCPCB.csv
+
+      - name: Generate electrically validated final carrier
+        run: node scripts/add-esp32-carrier-v3-battery-sense.mjs
+
+      - name: Inspect final carrier geometry
+        run: node scripts/inspect-esp32-carrier-v3-final.mjs
+
+      - name: Validate final electrical and system contract before package substitutions
+        run: |
+          node scripts/validate-esp32-carrier-v3-battery-sense.mjs
+          node scripts/validate-esp32-carrier-v3-routing.mjs
+          node scripts/validate-esp32-carrier-v3-system.mjs
+
+      - name: Apply hand-solder production transform
+        run: |
+          node scripts/apply-esp32-carrier-v3-hand-solder.mjs --existing
+          node scripts/finalize-esp32-carrier-v3-hand-solder.mjs
+
+      - name: Validate package-conversion contract
+        run: node scripts/validate-esp32-carrier-v3-hand-solder.mjs
+
+      - name: Refine hand-solder layout for native DRC
+        run: |
+          node scripts/refine-esp32-carrier-v3-hand-solder-drc.mjs
+          node scripts/refine-esp32-carrier-v3-hand-solder-drc4.mjs
+          node scripts/refine-esp32-carrier-v3-hand-solder-drc5.mjs
+          node scripts/refine-esp32-carrier-v3-hand-solder-drc6.mjs
+          node scripts/refine-esp32-carrier-v3-hand-solder-drc7.mjs
+          node scripts/refine-esp32-carrier-v3-hand-solder-drc8.mjs
+          node scripts/export-esp32-carrier-v3-cpl.mjs fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
+          node scripts/validate-esp32-carrier-v3-hand-solder-refined.mjs
 
       - name: Install KiCad 10
         run: |
@@ -34,29 +86,55 @@ jobs:
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y kicad
 
-      - name: Parse and refill board
+      - name: Parse, refill zones, and run KiCad DRC
+        id: native_drc
+        continue-on-error: true
         run: |
           set -uo pipefail
-          mkdir -p artifacts/gerbers artifacts/renderings
+          mkdir -p artifacts
           BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
           kicad-cli pcb drc --refill-zones --save-board --severity-all --all-track-errors --format json --output artifacts/drc.json "$BOARD" || true
           kicad-cli pcb drc --refill-zones --severity-all --all-track-errors --output artifacts/drc.rpt "$BOARD" || true
+          node scripts/validate-esp32-carrier-v3-drc.mjs artifacts/drc.json
+          node scripts/sync-esp32-carrier-v3-b64.mjs
+          node scripts/export-esp32-carrier-v3-cpl.mjs "$BOARD"
+          node scripts/validate-esp32-carrier-v3-hand-solder-refined.mjs "$BOARD"
           cp "$BOARD" artifacts/esp32_robot_carrier_v3.kicad_pcb
+          cp artifacts/drc.json artifacts/drc.rpt fixtures/esp32_robot_carrier/fabrication_v3/
 
-      - name: Reject new carrier-v3 electrical DRC issues
-        run: node scripts/validate-esp32-carrier-v3-drc.mjs artifacts/drc.json
-
-      - name: Generate fabrication outputs and SVG renderings
+      - name: Persist failing native DRC report
+        continue-on-error: true
+        if: steps.native_drc.outcome == 'failure' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
-          set -u
-          BOARD=fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
-          kicad-cli pcb export gerbers -o artifacts/gerbers/ "$BOARD"
-          kicad-cli pcb export drill -o artifacts/gerbers/ "$BOARD"
-          kicad-cli pcb export svg -o artifacts/renderings/front.svg --layers F.Cu,F.Mask,F.Silkscreen,Edge.Cuts "$BOARD"
-          kicad-cli pcb export svg -o artifacts/renderings/back.svg --layers B.Cu,B.Mask,B.Silkscreen,Edge.Cuts --mirror "$BOARD"
+          mkdir -p debug
+          cp artifacts/drc.json debug/esp32-carrier-v3-drc.json
+          cp artifacts/drc.rpt debug/esp32-carrier-v3-drc.rpt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add debug/esp32-carrier-v3-drc.json debug/esp32-carrier-v3-drc.rpt
+          if ! git diff --cached --quiet; then
+            git commit -m "debug: persist carrier native DRC report"
+            git pull --rebase origin "${{ github.head_ref }}" || true
+            git push origin "HEAD:${{ github.head_ref }}" || true
+          fi
+
+      - name: Require native DRC success
+        if: steps.native_drc.outcome == 'failure'
+        run: exit 1
+
+      - name: Generate and validate final fabrication package
+        run: node scripts/export-esp32-carrier-v3-fabrication.mjs
+
+      - name: Preserve validation artifacts
+        run: |
+          cp fixtures/esp32_robot_carrier/fabrication_v3/esp32_robot_carrier_v3-gerbers.zip artifacts/
+          cp fixtures/esp32_robot_carrier/fabrication_v3/board-stats.json artifacts/
+          cp fixtures/esp32_robot_carrier/fabrication_v3/renderings/front.svg artifacts/
+          cp fixtures/esp32_robot_carrier/fabrication_v3/renderings/back.svg artifacts/
+          cp fixtures/esp32_robot_carrier/fabrication_v3/renderings/top.png artifacts/
 
       - uses: actions/upload-artifact@v4
         with:
-          name: esp32-carrier-v3-production
+          name: esp32-carrier-v3-hand-solder-production
           path: artifacts
           if-no-files-found: error
