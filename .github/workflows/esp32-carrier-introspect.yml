@@ -4,7 +4,8 @@ on:
   pull_request:
     paths:
       - 'fixtures/esp32_robot_carrier/**'
-      - 'scripts/introspect-esp32-carrier-v2.mjs'
+      - 'scripts/add-esp32-carrier-v3-battery-sense.mjs'
+      - 'scripts/inspect-esp32-carrier-v3-final.mjs'
       - '.github/workflows/esp32-carrier-introspect.yml'
   workflow_dispatch:
 
@@ -16,5 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Dump carrier geometry and connectivity
-        run: node scripts/introspect-esp32-carrier-v2.mjs
+      - name: Generate final v3 carrier
+        run: node scripts/add-esp32-carrier-v3-battery-sense.mjs
+      - name: Dump final v3 geometry and connectivity
+        run: node scripts/inspect-esp32-carrier-v3-final.mjs
