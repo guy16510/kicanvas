@@ -9,6 +9,7 @@ on:
       - 'scripts/route-esp32-carrier-v3-*.mjs'
       - 'scripts/add-esp32-carrier-v3-battery-sense.mjs'
       - 'scripts/apply-esp32-carrier-v3-hand-solder.mjs'
+      - 'scripts/finalize-esp32-carrier-v3-hand-solder.mjs'
       - 'scripts/fix-esp32-carrier-hand-solder-transform.mjs'
       - 'scripts/inspect-esp32-carrier-v3-final.mjs'
       - 'scripts/export-esp32-carrier-v3-*.mjs'
@@ -43,7 +44,9 @@ jobs:
           node scripts/validate-esp32-carrier-v3-system.mjs
 
       - name: Apply hand-solder production transform
-        run: node scripts/apply-esp32-carrier-v3-hand-solder.mjs --existing
+        run: |
+          node scripts/apply-esp32-carrier-v3-hand-solder.mjs --existing
+          node scripts/finalize-esp32-carrier-v3-hand-solder.mjs
 
       - name: Validate hand-solder production contract
         run: node scripts/validate-esp32-carrier-v3-hand-solder.mjs
