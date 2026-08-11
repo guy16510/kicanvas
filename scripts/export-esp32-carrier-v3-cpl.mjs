@@ -42,12 +42,16 @@ while ((start = board.indexOf("(footprint", start)) >= 0) {
     const hasThroughHolePad = /\(pad\s+"[^"]*"\s+(?:thru_hole|np_thru_hole)\b/.test(
         block,
     );
+    const excludedByFootprint =
+        /\(attr\s[^)]*\bexclude_from_pos_files\b/.test(block) ||
+        /\(attr\s[^)]*\bexclude_from_bom\b/.test(block);
     if (
         reference &&
         location &&
         hasSmdPad &&
         !hasThroughHolePad &&
-        !excludedReferences.has(reference[1])
+        !excludedReferences.has(reference[1]) &&
+        !excludedByFootprint
     )
         placements.push({ reference: reference[1], ...location });
     start = end;
