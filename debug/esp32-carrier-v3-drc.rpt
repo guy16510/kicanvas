@@ -1,92 +1,32 @@
 ** Drc report for esp32_robot_carrier_v3.kicad_pcb **
-** Created on 2026-08-11T13:26:52 **
+** Created on 2026-08-11T13:28:23 **
 ** Report includes: Errors, Warnings, Exclusions **
 
-** Found 21 DRC violations **
-[solder_mask_bridge]: Front solder mask aperture bridges items with different nets
-    Rule: board setup solder mask min width; error
-    @(113.5000 mm, 45.0000 mm): Via [FRONT_TRIG_5V] on F.Cu - B.Cu
-    @(112.0000 mm, 46.0000 mm): PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG
-[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
-    Rule: board setup solder mask min width; error
-    @(113.5000 mm, 45.0000 mm): Via [FRONT_TRIG_5V] on F.Cu - B.Cu
-    @(112.0000 mm, 46.0000 mm): PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG
-[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
-    Rule: board setup solder mask min width; error
-    @(88.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 5.5000 mm
-    @(88.0000 mm, 103.0000 mm): PTH pad 1 [+5V] of J_RGB_5V
-[shorting_items]: Items shorting two nets (nets RGB_DATA_5V and +5V)
+** Found 6 DRC violations **
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1750 mm)
     Local override; error
-    @(88.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 5.5000 mm
-    @(88.0000 mm, 103.0000 mm): PTH pad 1 [+5V] of J_RGB_5V
-[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    @(129.0000 mm, 35.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 7.5000 mm
+    @(128.5000 mm, 37.0000 mm): Track [FRONT_TRIG] on B.Cu, length 8.0000 mm
+[shorting_items]: Items shorting two nets (nets RGB_DATA_5V and FRONT_TRIG)
+    Local override; error
+    @(129.0000 mm, 35.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 7.5000 mm
+    @(128.5000 mm, 37.0000 mm): Via [FRONT_TRIG] on F.Cu - B.Cu
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1000 mm)
     Rule: board setup constraints hole; error
-    @(88.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 5.5000 mm
-    @(88.0000 mm, 103.0000 mm): PTH pad 1 [+5V] of J_RGB_5V
+    @(129.0000 mm, 35.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 7.5000 mm
+    @(128.5000 mm, 37.0000 mm): Via [FRONT_TRIG] on F.Cu - B.Cu
 [tracks_crossing]: Tracks crossing
     Local override; error
-    @(132.0000 mm, 33.5000 mm): Track [RGB_DATA_5V] on B.Cu, length 66.5000 mm
-    @(155.0000 mm, 50.0000 mm): Track [RIGHT_TRIG_5V] on B.Cu, length 34.5000 mm
+    @(118.0000 mm, 90.0000 mm): Track [AUX_GPIO2] on F.Cu, length 17.2000 mm
+    @(129.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on F.Cu, length 44.0000 mm
 [tracks_crossing]: Tracks crossing
     Local override; error
-    @(132.0000 mm, 33.5000 mm): Track [RGB_DATA_5V] on B.Cu, length 66.5000 mm
-    @(154.0000 mm, 45.0000 mm): Track [FRONT_TRIG_5V] on B.Cu, length 33.5000 mm
-[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0528 mm)
-    Local override; error
-    @(115.5000 mm, 45.0000 mm): Track [FRONT_TRIG_5V] on B.Cu, length 2.0000 mm
-    @(112.0000 mm, 46.0000 mm): PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG
-[shorting_items]: Items shorting two nets (nets FRONT_TRIG_5V and RIGHT_TRIG_5V)
-    Local override; error
-    @(113.5000 mm, 45.0000 mm): Via [FRONT_TRIG_5V] on F.Cu - B.Cu
-    @(112.0000 mm, 46.0000 mm): PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG
-[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
-    Rule: board setup constraints hole; error
-    @(112.0000 mm, 46.0000 mm): PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG
-    @(113.5000 mm, 45.0000 mm): Via [FRONT_TRIG_5V] on F.Cu - B.Cu
-[shorting_items]: Items shorting two nets (nets FRONT_TRIG_5V and RIGHT_TRIG_5V)
-    Local override; error
-    @(113.5000 mm, 45.0000 mm): Via [FRONT_TRIG_5V] on F.Cu - B.Cu
-    @(112.0000 mm, 46.0000 mm): PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG
-[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
-    Rule: board setup constraints hole; error
-    @(112.0000 mm, 46.0000 mm): PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG
-    @(113.5000 mm, 45.0000 mm): Via [FRONT_TRIG_5V] on F.Cu - B.Cu
-[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0528 mm)
-    Local override; error
-    @(113.5000 mm, 45.0000 mm): Track [FRONT_TRIG_5V] on F.Cu, length 4.0000 mm
-    @(112.0000 mm, 46.0000 mm): PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG
+    @(95.0000 mm, 96.0000 mm): Track [GND] on F.Cu, length 8.6023 mm
+    @(129.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on F.Cu, length 44.0000 mm
 [tracks_crossing]: Tracks crossing
     Local override; error
-    @(88.0000 mm, 92.0000 mm): Track [+5V] on B.Cu, length 11.0000 mm
-    @(88.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 5.5000 mm
-[tracks_crossing]: Tracks crossing
-    Local override; error
-    @(121.5000 mm, 100.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 33.5000 mm
-    @(88.0000 mm, 92.0000 mm): Track [+5V] on B.Cu, length 11.0000 mm
-[tracks_crossing]: Tracks crossing
-    Local override; error
-    @(148.0000 mm, 15.0000 mm): Track [+5V] on B.Cu, length 27.5000 mm
-    @(128.5000 mm, 30.5800 mm): Track [LEFT_TRIG_5V] on B.Cu, length 18.5800 mm
-[tracks_crossing]: Tracks crossing
-    Local override; error
-    @(120.5000 mm, 45.0000 mm): Track [FRONT_TRIG_5V] on F.Cu, length 5.0000 mm
-    @(116.0000 mm, 25.0000 mm): Track [+3V3] on F.Cu, length 63.0000 mm
-[shorting_items]: Items shorting two nets (nets FRONT_TRIG_5V and +3V3)
-    Local override; error
-    @(115.5000 mm, 45.0000 mm): Via [FRONT_TRIG_5V] on F.Cu - B.Cu
-    @(116.0000 mm, 25.0000 mm): Track [+3V3] on F.Cu, length 63.0000 mm
-[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0250 mm)
-    Rule: board setup constraints hole; error
-    @(116.0000 mm, 25.0000 mm): Track [+3V3] on F.Cu, length 63.0000 mm
-    @(115.5000 mm, 45.0000 mm): Via [FRONT_TRIG_5V] on F.Cu - B.Cu
-[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
-    Rule: board setup constraints hole; error
-    @(112.0000 mm, 46.0000 mm): PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG
-    @(113.5000 mm, 45.0000 mm): Via [FRONT_TRIG_5V] on F.Cu - B.Cu
-[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
-    Rule: board setup constraints hole; error
-    @(112.0000 mm, 46.0000 mm): PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG
-    @(113.5000 mm, 45.0000 mm): Via [FRONT_TRIG_5V] on F.Cu - B.Cu
+    @(85.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on F.Cu, length 5.5000 mm
+    @(82.5000 mm, 102.5000 mm): Track [+5V] on F.Cu, length 5.5227 mm
 
 ** Found 0 unconnected pads **
 
