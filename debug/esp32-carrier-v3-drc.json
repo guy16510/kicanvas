@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/drc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-08-11T13:28:21",
+    "date": "2026-08-11T13:33:09",
     "ignored_checks": [
         {
             "description": "Footprint has no courtyard defined",
@@ -35,142 +35,50 @@
     "unconnected_items": [],
     "violations": [
         {
-            "description": "Clearance violation ( clearance 0.2000 mm; actual 0.1750 mm)",
+            "description": "Rear solder mask aperture bridges items with different nets",
             "items": [
                 {
-                    "description": "Track [RGB_DATA_5V] on B.Cu, length 7.5000 mm",
+                    "description": "Track [RGB_DATA_5V] on B.Cu, length 7.8102 mm",
                     "pos": {
-                        "x": 129.0,
-                        "y": 35.0
+                        "x": 92.0,
+                        "y": 100.0
                     },
-                    "uuid": "9f0621cb-1ddb-4904-b05c-6ec8736149db"
+                    "uuid": "28d125c6-e0be-45ce-892f-8abcc0936c7a"
                 },
                 {
-                    "description": "Track [FRONT_TRIG] on B.Cu, length 8.0000 mm",
+                    "description": "PTH pad 1 [+5V] of J_RGB_5V",
                     "pos": {
-                        "x": 128.5,
-                        "y": 37.0
+                        "x": 88.0,
+                        "y": 103.0
                     },
-                    "uuid": "d920a272-f92b-4910-bb69-a2edc3174833"
+                    "uuid": "980cf415-826a-41dd-99d4-e7e26e9588e6"
                 }
             ],
             "severity": "error",
-            "type": "clearance"
+            "type": "solder_mask_bridge"
         },
         {
-            "description": "Items shorting two nets (nets RGB_DATA_5V and FRONT_TRIG)",
+            "description": "Items shorting two nets (nets RGB_DATA_5V and +5V)",
             "items": [
                 {
-                    "description": "Track [RGB_DATA_5V] on B.Cu, length 7.5000 mm",
+                    "description": "Track [RGB_DATA_5V] on B.Cu, length 7.8102 mm",
                     "pos": {
-                        "x": 129.0,
-                        "y": 35.0
+                        "x": 92.0,
+                        "y": 100.0
                     },
-                    "uuid": "9f0621cb-1ddb-4904-b05c-6ec8736149db"
+                    "uuid": "28d125c6-e0be-45ce-892f-8abcc0936c7a"
                 },
                 {
-                    "description": "Via [FRONT_TRIG] on F.Cu - B.Cu",
+                    "description": "PTH pad 1 [+5V] of J_RGB_5V",
                     "pos": {
-                        "x": 128.5,
-                        "y": 37.0
+                        "x": 88.0,
+                        "y": 103.0
                     },
-                    "uuid": "c862b675-f69b-4b05-8b6c-9bf13d163d25"
+                    "uuid": "980cf415-826a-41dd-99d4-e7e26e9588e6"
                 }
             ],
             "severity": "error",
             "type": "shorting_items"
-        },
-        {
-            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1000 mm)",
-            "items": [
-                {
-                    "description": "Track [RGB_DATA_5V] on B.Cu, length 7.5000 mm",
-                    "pos": {
-                        "x": 129.0,
-                        "y": 35.0
-                    },
-                    "uuid": "9f0621cb-1ddb-4904-b05c-6ec8736149db"
-                },
-                {
-                    "description": "Via [FRONT_TRIG] on F.Cu - B.Cu",
-                    "pos": {
-                        "x": 128.5,
-                        "y": 37.0
-                    },
-                    "uuid": "c862b675-f69b-4b05-8b6c-9bf13d163d25"
-                }
-            ],
-            "severity": "error",
-            "type": "hole_clearance"
-        },
-        {
-            "description": "Tracks crossing",
-            "items": [
-                {
-                    "description": "Track [GND] on F.Cu, length 8.6023 mm",
-                    "pos": {
-                        "x": 95.0,
-                        "y": 96.0
-                    },
-                    "uuid": "1f67e6a2-adf7-4e48-bb08-56e9401d771f"
-                },
-                {
-                    "description": "Track [RGB_DATA_5V] on F.Cu, length 44.0000 mm",
-                    "pos": {
-                        "x": 129.0,
-                        "y": 100.0
-                    },
-                    "uuid": "6c1f3ce7-368d-40f7-b59e-b2ad580b93f3"
-                }
-            ],
-            "severity": "error",
-            "type": "tracks_crossing"
-        },
-        {
-            "description": "Tracks crossing",
-            "items": [
-                {
-                    "description": "Track [RGB_DATA_5V] on F.Cu, length 5.5000 mm",
-                    "pos": {
-                        "x": 85.0,
-                        "y": 100.0
-                    },
-                    "uuid": "838f42ff-4677-45bb-8dd3-625e0be5e1b7"
-                },
-                {
-                    "description": "Track [+5V] on F.Cu, length 5.5227 mm",
-                    "pos": {
-                        "x": 82.5,
-                        "y": 102.5
-                    },
-                    "uuid": "febd5284-442b-4d30-b98b-0aa7b170f2a2"
-                }
-            ],
-            "severity": "error",
-            "type": "tracks_crossing"
-        },
-        {
-            "description": "Tracks crossing",
-            "items": [
-                {
-                    "description": "Track [AUX_GPIO2] on F.Cu, length 17.2000 mm",
-                    "pos": {
-                        "x": 118.0,
-                        "y": 90.0
-                    },
-                    "uuid": "0e6da4a2-5c87-4d7a-9c59-3c17040c58be"
-                },
-                {
-                    "description": "Track [RGB_DATA_5V] on F.Cu, length 44.0000 mm",
-                    "pos": {
-                        "x": 129.0,
-                        "y": 100.0
-                    },
-                    "uuid": "6c1f3ce7-368d-40f7-b59e-b2ad580b93f3"
-                }
-            ],
-            "severity": "error",
-            "type": "tracks_crossing"
         }
     ]
 }

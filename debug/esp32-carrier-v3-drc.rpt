@@ -1,32 +1,16 @@
 ** Drc report for esp32_robot_carrier_v3.kicad_pcb **
-** Created on 2026-08-11T13:28:23 **
+** Created on 2026-08-11T13:33:11 **
 ** Report includes: Errors, Warnings, Exclusions **
 
-** Found 6 DRC violations **
-[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1750 mm)
+** Found 2 DRC violations **
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(92.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 7.8102 mm
+    @(88.0000 mm, 103.0000 mm): PTH pad 1 [+5V] of J_RGB_5V
+[shorting_items]: Items shorting two nets (nets RGB_DATA_5V and +5V)
     Local override; error
-    @(129.0000 mm, 35.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 7.5000 mm
-    @(128.5000 mm, 37.0000 mm): Track [FRONT_TRIG] on B.Cu, length 8.0000 mm
-[shorting_items]: Items shorting two nets (nets RGB_DATA_5V and FRONT_TRIG)
-    Local override; error
-    @(129.0000 mm, 35.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 7.5000 mm
-    @(128.5000 mm, 37.0000 mm): Via [FRONT_TRIG] on F.Cu - B.Cu
-[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1000 mm)
-    Rule: board setup constraints hole; error
-    @(129.0000 mm, 35.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 7.5000 mm
-    @(128.5000 mm, 37.0000 mm): Via [FRONT_TRIG] on F.Cu - B.Cu
-[tracks_crossing]: Tracks crossing
-    Local override; error
-    @(118.0000 mm, 90.0000 mm): Track [AUX_GPIO2] on F.Cu, length 17.2000 mm
-    @(129.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on F.Cu, length 44.0000 mm
-[tracks_crossing]: Tracks crossing
-    Local override; error
-    @(95.0000 mm, 96.0000 mm): Track [GND] on F.Cu, length 8.6023 mm
-    @(129.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on F.Cu, length 44.0000 mm
-[tracks_crossing]: Tracks crossing
-    Local override; error
-    @(85.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on F.Cu, length 5.5000 mm
-    @(82.5000 mm, 102.5000 mm): Track [+5V] on F.Cu, length 5.5227 mm
+    @(92.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 7.8102 mm
+    @(88.0000 mm, 103.0000 mm): PTH pad 1 [+5V] of J_RGB_5V
 
 ** Found 0 unconnected pads **
 
