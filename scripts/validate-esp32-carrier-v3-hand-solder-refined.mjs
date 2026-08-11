@@ -10,7 +10,7 @@ const failures = [];
 
 function endOfBlock(source, start) {
     let depth = 0;
-    for (let i = start; i < source.length; i += 1) {
+    for (let i = start; i < source.length; i++) {
         if (source[i] === "(") depth += 1;
         else if (source[i] === ")" && --depth === 0) return i + 1;
     }
@@ -72,22 +72,26 @@ for (const ref of refs.filter((r) => /^[RC]\d+$/.test(r))) {
     const block = footprint(ref);
     if (/0402|0603|0805/.test(block)) failures.push(`${ref}: small passive footprint remains`);
     if (!block.includes("_1206_HAND_SOLDER")) continue;
-    const minimum = new Set(["R43", "R53"]).has(ref) ? 1.3 : 1.5;
+    const minimum = ref === "R43" ? 1.3 : 1.5;
     for (const match of block.matchAll(/\(pad\s+"([^"]+)"\s+smd/g)) {
         const actual = size(pad(ref, match[1]));
         if (!actual || actual[0] < minimum || actual[1] < minimum)
             failures.push(`${ref}.${match[1]}: hand pad below ${minimum} mm minimum`);
     }
 }
+requireAt("R53", [45, 69]);
+requireSize("R53", "1", [1.5, 1.5]);
+requireSize("R53", "2", [1.5, 1.5]);
 
 requireAt("U11", [139, 25.5]);
 for (let p = 1; p <= 14; p += 1) {
     requireText(pad("U11", String(p)), "thru_hole", `U11.${p}: not through-hole`);
     requireSize("U11", String(p), [1.8, 1.8]);
 }
+const photoPositions = { U6: [19, 38], U7: [19, 44], U8: [18, 62], U9: [18, 68] };
 for (const ref of ["U6", "U7", "U8", "U9"]) {
     requireText(footprint(ref), "AQY212GH_60V_1.1A_PHOTOMOS", `${ref}: wrong PhotoMOS`);
-    requireAt(ref, [19, { U6: 38, U7: 44, U8: 62, U9: 68 }[ref]]);
+    requireAt(ref, photoPositions[ref]);
     for (let p = 1; p <= 4; p += 1) requireSize(ref, String(p), [1.8, 1.8]);
 }
 
@@ -116,7 +120,8 @@ if (/SOT-23-5_TLV9001|74AHCT1G125_TRIGGER_3V3_TO_5V/.test(bom))
     failures.push("BOM still contains obsolete tiny AHCT buffer");
 
 requireText(board, '(gr_rect (start 1 1) (end 156 190)', "Edge.Cuts missing refined routing bay");
-requireText(board, '(xy 148 2) (xy 148 98)', "top GND pour does not reach logic bay");
+requireText(board, '(xy 155 2) (xy 155 98)', "top GND pour does not reach refined logic bay");
+requireText(board, '(xy 155 108) (xy 155 189)', "lower GND pour does not reach refined routing bay");
 requireText(board, 'HAND-SOLDER BUILD | 1206 + DIP', "hand-solder silk marker missing");
 if (!/\(thermal_gap\s+[\d.]+\)/.test(board) || !/\(thermal_bridge_width\s+[\d.]+\)/.test(board))
     failures.push("thermal-relief geometry missing");
@@ -131,8 +136,10 @@ if (failures.length) {
 }
 
 console.log("refined hand-solder validation passed");
-console.log("- 1206 passives retained, crowded lands compacted only where DRC required");
+console.log("- all production passives remain 1206 or larger");
+console.log("- R53 stays full-size 1206 and is relocated away from servo routing");
 console.log("- U11 DIP logic bay and AQY212GH DIP PhotoMOS geometry verified");
-console.log("- U4 restored to validated MSOP copper, U10 retains toe-only extension");
+console.log("- U8/U9 clear the throttle-filter B.Cu run");
+console.log("- U4 uses validated MSOP copper, U10 retains toe-only extension");
 console.log("- DNP AHCT anchors have no paste and stay out of BOM/CPL");
-console.log("- final 156 x 189 mm outline and thermal-relief contract verified");
+console.log("- final 156 x 189 mm outline, full-bay GND pours, and thermal relief verified");
