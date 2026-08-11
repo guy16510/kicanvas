@@ -49,11 +49,12 @@ function topLevelBlocks(kind) {
   return blocks;
 }
 
+const allFootprints = topLevelBlocks("footprint");
 const edgeBlocks = ["gr_rect", "gr_line", "gr_arc", "gr_curve", "gr_circle"]
   .flatMap(topLevelBlocks)
   .filter((block) => block.includes('(layer "Edge.Cuts")'));
 
-const footprints = topLevelBlocks("footprint").map((block) => {
+const footprints = allFootprints.map((block) => {
   const ref = block.match(/\(property "Reference" "([^"]+)"/)?.[1] ?? "?";
   const at = block.match(/^\(footprint\s+"[^"]+"[\s\S]*?\(at\s+(-?[\d.]+)\s+(-?[\d.]+)(?:\s+(-?[\d.]+))?/);
   return at ? { ref, x: Number(at[1]), y: Number(at[2]), rotation: Number(at[3] ?? 0) } : { ref };
@@ -72,6 +73,31 @@ console.log("=== FINAL ZONES ===");
 for (const zone of zones) console.log(JSON.stringify(zone));
 console.log("=== FOOTPRINT POSITIONS ===");
 for (const fp of footprints.sort((a, b) => (a.y ?? 0) - (b.y ?? 0) || (a.x ?? 0) - (b.x ?? 0))) console.log(JSON.stringify(fp));
+
+const targetRefs = new Set(["U_TRIG_L", "U_TRIG_F", "U_TRIG_R", "U_RGB", "U6", "U7", "U8", "U9", "U4", "U10"]);
+console.log("=== TARGET FOOTPRINT BLOCKS ===");
+for (const block of allFootprints) {
+  const ref = block.match(/\(property "Reference" "([^"]+)"/)?.[1];
+  if (targetRefs.has(ref)) console.log(`--- ${ref} ---\n${block}`);
+}
+
+const targetNets = new Set([16, 17, 21, 22, 52, 71, 72, 73]);
+console.log("=== TARGET ROUTED ITEMS ===");
+for (const kind of ["segment", "via"]) {
+  for (const block of topLevelBlocks(kind)) {
+    const net = Number(block.match(/\(net\s+(\d+)\)/)?.[1] ?? -1);
+    if (targetNets.has(net)) console.log(block.replace(/\s+/g, " "));
+  }
+}
+
+console.log("=== GND ZONE SOURCE ===");
+for (const block of topLevelBlocks("zone")) {
+  if (block.includes('(net 3)') && block.includes('(layer "B.Cu")') && block.includes('(xy 2 2)')) {
+    console.log(block);
+    break;
+  }
+}
+
 console.log("=== WORKFLOW FILES ===");
 for (const file of fs.readdirSync(".github/workflows").sort()) {
   const content = fs.readFileSync(`.github/workflows/${file}`, "utf8");
