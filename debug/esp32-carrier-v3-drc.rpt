@@ -1,0 +1,146 @@
+** Drc report for esp32_robot_carrier_v3.kicad_pcb **
+** Created on 2026-08-11T03:51:39 **
+** Report includes: Errors, Warnings, Exclusions **
+
+** Found 32 DRC violations **
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+    @(22.8100 mm, 66.7300 mm): PTH pad 1 [R_REVERSE_GATE] of U9
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+    @(22.8100 mm, 69.2700 mm): PTH pad 2 [GND] of U9
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+    @(22.8100 mm, 63.2700 mm): PTH pad 2 [GND] of U8
+[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+    @(22.8100 mm, 60.7300 mm): PTH pad 1 [L_REVERSE_GATE] of U8
+[solder_mask_bridge]: Front solder mask aperture bridges items with different nets
+    Rule: board setup solder mask min width; error
+    @(106.0000 mm, 14.0000 mm): Track [LEFT_TRIG] on F.Cu, length 5.0606 mm
+    @(102.9000 mm, 11.0000 mm): Pad 3 [GND] of U_TRIG_L on F.Cu
+[tracks_crossing]: Tracks crossing
+    Local override; error
+    @(145.0000 mm, 37.0000 mm): Track [FRONT_TRIG] on F.Cu, length 36.0000 mm
+    @(126.0000 mm, 25.0000 mm): Track [+3V3] on F.Cu, length 37.0000 mm
+[tracks_crossing]: Tracks crossing
+    Local override; error
+    @(147.0000 mm, 49.0000 mm): Track [RIGHT_TRIG] on F.Cu, length 38.0000 mm
+    @(126.0000 mm, 25.0000 mm): Track [+3V3] on F.Cu, length 37.0000 mm
+[shorting_items]: Items shorting two nets (nets L_THROTTLE_FILTERED and L_REVERSE_GATE)
+    Local override; error
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+    @(22.8100 mm, 60.7300 mm): PTH pad 1 [L_REVERSE_GATE] of U8
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1000 mm)
+    Rule: board setup constraints hole; error
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+    @(22.8100 mm, 60.7300 mm): PTH pad 1 [L_REVERSE_GATE] of U8
+[shorting_items]: Items shorting two nets (nets GND and L_THROTTLE_FILTERED)
+    Local override; error
+    @(22.8100 mm, 63.2700 mm): PTH pad 2 [GND] of U8
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1000 mm)
+    Rule: board setup constraints hole; error
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+    @(22.8100 mm, 63.2700 mm): PTH pad 2 [GND] of U8
+[shorting_items]: Items shorting two nets (nets L_THROTTLE_FILTERED and R_REVERSE_GATE)
+    Local override; error
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+    @(22.8100 mm, 66.7300 mm): PTH pad 1 [R_REVERSE_GATE] of U9
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1000 mm)
+    Rule: board setup constraints hole; error
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+    @(22.8100 mm, 66.7300 mm): PTH pad 1 [R_REVERSE_GATE] of U9
+[shorting_items]: Items shorting two nets (nets L_THROTTLE_FILTERED and GND)
+    Local override; error
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+    @(22.8100 mm, 69.2700 mm): PTH pad 2 [GND] of U9
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1000 mm)
+    Rule: board setup constraints hole; error
+    @(23.5000 mm, 54.5000 mm): Track [L_THROTTLE_FILTERED] on B.Cu, length 31.0000 mm
+    @(22.8100 mm, 69.2700 mm): PTH pad 2 [GND] of U9
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0027 mm)
+    Local override; error
+    @(104.5000 mm, 47.5000 mm): Track [RIGHT_TRIG] on F.Cu, length 2.1932 mm
+    @(102.9000 mm, 47.0000 mm): Pad 3 [GND] of U_TRIG_R on F.Cu
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0805 mm)
+    Local override; error
+    @(105.1000 mm, 47.0000 mm): Pad 4 [RIGHT_TRIG_5V] of U_TRIG_R on F.Cu
+    @(109.0000 mm, 49.0000 mm): Track [RIGHT_TRIG] on F.Cu, length 4.7434 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0483 mm)
+    Local override; error
+    @(105.1000 mm, 47.0000 mm): Pad 4 [RIGHT_TRIG_5V] of U_TRIG_R on F.Cu
+    @(104.5000 mm, 47.5000 mm): Track [RIGHT_TRIG] on F.Cu, length 2.1932 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0805 mm)
+    Local override; error
+    @(105.1000 mm, 39.0000 mm): Pad 5 [+5V] of U_TRIG_F on F.Cu
+    @(109.0000 mm, 37.0000 mm): Track [FRONT_TRIG] on F.Cu, length 4.7434 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0027 mm)
+    Local override; error
+    @(102.9000 mm, 39.0000 mm): Pad 1 [GND] of U_TRIG_F on F.Cu
+    @(104.5000 mm, 38.5000 mm): Track [FRONT_TRIG] on F.Cu, length 2.1932 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0483 mm)
+    Local override; error
+    @(105.1000 mm, 39.0000 mm): Pad 5 [+5V] of U_TRIG_F on F.Cu
+    @(104.5000 mm, 38.5000 mm): Track [FRONT_TRIG] on F.Cu, length 2.1932 mm
+[tracks_crossing]: Tracks crossing
+    Local override; error
+    @(147.5000 mm, 49.0000 mm): Track [RIGHT_TRIG_5V] on B.Cu, length 31.5000 mm
+    @(118.0000 mm, 16.0000 mm): Track [AUX_GPIO2] on B.Cu, length 74.0000 mm
+[tracks_crossing]: Tracks crossing
+    Local override; error
+    @(118.0000 mm, 16.0000 mm): Track [AUX_GPIO2] on B.Cu, length 74.0000 mm
+    @(146.0000 mm, 37.0000 mm): Track [FRONT_TRIG_5V] on B.Cu, length 30.0000 mm
+[tracks_crossing]: Tracks crossing
+    Local override; error
+    @(130.5000 mm, 30.5800 mm): Track [LEFT_TRIG_5V] on B.Cu, length 18.5800 mm
+    @(135.1900 mm, 28.0400 mm): Track [LEFT_TRIG] on B.Cu, length 6.6900 mm
+[shorting_items]: Items shorting two nets (nets GND and LEFT_TRIG)
+    Local override; error
+    @(102.9000 mm, 11.0000 mm): Pad 3 [GND] of U_TRIG_L on F.Cu
+    @(106.0000 mm, 14.0000 mm): Track [LEFT_TRIG] on F.Cu, length 5.0606 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1816 mm)
+    Local override; error
+    @(52.0000 mm, 63.0000 mm): Track [SERVO_SIG] on F.Cu, length 5.9169 mm
+    @(49.1000 mm, 66.0000 mm): Pad 2 [GND] of R53 on F.Cu
+[tracks_crossing]: Tracks crossing
+    Local override; error
+    @(153.0000 mm, 106.5000 mm): Track [RGB_DATA_5V] on B.Cu, length 68.0000 mm
+    @(108.1000 mm, 103.0000 mm): Track [GND] on B.Cu, length 7.0000 mm
+[tracks_crossing]: Tracks crossing
+    Local override; error
+    @(153.0000 mm, 106.5000 mm): Track [RGB_DATA_5V] on B.Cu, length 68.0000 mm
+    @(124.0000 mm, 152.0000 mm): Track [+5V] on B.Cu, length 60.0000 mm
+[shorting_items]: Items shorting two nets (nets +5V and AUX_GPIO2)
+    Local override; error
+    @(130.0000 mm, 17.8800 mm): Track [+5V] on F.Cu, length 24.0000 mm
+    @(120.0000 mm, 24.0000 mm): Track [AUX_GPIO2] on F.Cu, length 6.0000 mm
+[tracks_crossing]: Tracks crossing
+    Local override; error
+    @(130.0000 mm, 17.8800 mm): Track [+5V] on F.Cu, length 24.0000 mm
+    @(120.0000 mm, 18.0000 mm): Track [AUX_GPIO2] on F.Cu, length 2.8284 mm
+[tracks_crossing]: Tracks crossing
+    Local override; error
+    @(145.0000 mm, 37.0000 mm): Track [FRONT_TRIG] on F.Cu, length 36.0000 mm
+    @(116.0000 mm, 25.0000 mm): Track [+3V3] on F.Cu, length 63.0000 mm
+[tracks_crossing]: Tracks crossing
+    Local override; error
+    @(147.0000 mm, 49.0000 mm): Track [RIGHT_TRIG] on F.Cu, length 38.0000 mm
+    @(116.0000 mm, 25.0000 mm): Track [+3V3] on F.Cu, length 63.0000 mm
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **
