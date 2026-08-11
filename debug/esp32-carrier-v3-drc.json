@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/drc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-08-11T13:17:22",
+    "date": "2026-08-11T13:21:59",
     "ignored_checks": [
         {
             "description": "Footprint has no courtyard defined",
@@ -35,502 +35,487 @@
     "unconnected_items": [],
     "violations": [
         {
-            "description": "Rear solder mask aperture bridges items with different nets",
-            "items": [
-                {
-                    "description": "Track [+5V] on B.Cu, length 22.3100 mm",
-                    "pos": {
-                        "x": 142.81,
-                        "y": 17.88
-                    },
-                    "uuid": "63c7b805-38e6-4ef5-9faa-01852dcea218"
-                },
-                {
-                    "description": "PTH pad 1 [GND] of U11",
-                    "pos": {
-                        "x": 135.19,
-                        "y": 17.88
-                    },
-                    "uuid": "8ed622f8-9685-4a19-80e7-7cb9c8533054"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Rear solder mask aperture bridges items with different nets",
-            "items": [
-                {
-                    "description": "Track [LEFT_TRIG_5V] on B.Cu, length 9.8100 mm",
-                    "pos": {
-                        "x": 135.19,
-                        "y": 30.58
-                    },
-                    "uuid": "44754b89-b2d3-49e9-ac78-b8785d815de8"
-                },
-                {
-                    "description": "PTH pad 9 [FRONT_TRIG] of U11",
-                    "pos": {
-                        "x": 142.81,
-                        "y": 30.58
-                    },
-                    "uuid": "b08210c1-c0a5-4b13-8442-25999d478a98"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Rear solder mask aperture bridges items with different nets",
-            "items": [
-                {
-                    "description": "Track [FRONT_TRIG_5V] on B.Cu, length 33.5000 mm",
-                    "pos": {
-                        "x": 154.0,
-                        "y": 43.5
-                    },
-                    "uuid": "cee016ff-d66b-4064-8b92-6cee13f375fe"
-                },
-                {
-                    "description": "PTH pad 1 [+3V3] of J3V3_2",
-                    "pos": {
-                        "x": 126.0,
-                        "y": 42.0
-                    },
-                    "uuid": "630cdad7-d4f7-45c4-8428-587ee71b97b2"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Rear solder mask aperture bridges items with different nets",
-            "items": [
-                {
-                    "description": "Track [FRONT_TRIG_5V] on B.Cu, length 33.5000 mm",
-                    "pos": {
-                        "x": 154.0,
-                        "y": 43.5
-                    },
-                    "uuid": "cee016ff-d66b-4064-8b92-6cee13f375fe"
-                },
-                {
-                    "description": "PTH pad 1 [GND] of JGND3_2",
-                    "pos": {
-                        "x": 122.0,
-                        "y": 42.0
-                    },
-                    "uuid": "f8885cb0-1a89-43b3-a694-bd574264b858"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
             "description": "Front solder mask aperture bridges items with different nets",
-            "items": [
-                {
-                    "description": "Track [RGB_DATA_5V] on F.Cu, length 69.0000 mm",
-                    "pos": {
-                        "x": 115.0,
-                        "y": 35.5
-                    },
-                    "uuid": "403bb7be-f342-4ae1-9fbc-2921ee6ad1b1"
-                },
-                {
-                    "description": "PTH pad 1 [+3V3] of J3V3",
-                    "pos": {
-                        "x": 114.0,
-                        "y": 88.0
-                    },
-                    "uuid": "a7749373-7f89-46b9-8d12-0d7399234f0d"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Thermal relief connection to zone incomplete (layer B.Cu; zone min spoke count 2; actual 1)",
-            "items": [
-                {
-                    "description": "Zone [GND] on B.Cu, priority 1",
-                    "pos": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "uuid": "fa6827e5-3f7d-40dd-8760-045c6b323f73"
-                },
-                {
-                    "description": "PTH pad 1 [GND] of U11",
-                    "pos": {
-                        "x": 135.19,
-                        "y": 17.88
-                    },
-                    "uuid": "8ed622f8-9685-4a19-80e7-7cb9c8533054"
-                }
-            ],
-            "severity": "error",
-            "type": "starved_thermal"
-        },
-        {
-            "description": "Items shorting two nets (nets LEFT_TRIG_5V and FRONT_TRIG)",
-            "items": [
-                {
-                    "description": "Track [LEFT_TRIG_5V] on B.Cu, length 9.8100 mm",
-                    "pos": {
-                        "x": 135.19,
-                        "y": 30.58
-                    },
-                    "uuid": "44754b89-b2d3-49e9-ac78-b8785d815de8"
-                },
-                {
-                    "description": "PTH pad 9 [FRONT_TRIG] of U11",
-                    "pos": {
-                        "x": 142.81,
-                        "y": 30.58
-                    },
-                    "uuid": "b08210c1-c0a5-4b13-8442-25999d478a98"
-                }
-            ],
-            "severity": "error",
-            "type": "shorting_items"
-        },
-        {
-            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Track [LEFT_TRIG_5V] on B.Cu, length 9.8100 mm",
-                    "pos": {
-                        "x": 135.19,
-                        "y": 30.58
-                    },
-                    "uuid": "44754b89-b2d3-49e9-ac78-b8785d815de8"
-                },
-                {
-                    "description": "PTH pad 9 [FRONT_TRIG] of U11",
-                    "pos": {
-                        "x": 142.81,
-                        "y": 30.58
-                    },
-                    "uuid": "b08210c1-c0a5-4b13-8442-25999d478a98"
-                }
-            ],
-            "severity": "error",
-            "type": "hole_clearance"
-        },
-        {
-            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Track [RGB_DATA_5V] on F.Cu, length 69.0000 mm",
-                    "pos": {
-                        "x": 115.0,
-                        "y": 35.5
-                    },
-                    "uuid": "403bb7be-f342-4ae1-9fbc-2921ee6ad1b1"
-                },
-                {
-                    "description": "NPTH pad of H4",
-                    "pos": {
-                        "x": 115.0,
-                        "y": 95.0
-                    },
-                    "uuid": "d8f0320d-f085-4b04-98fd-70a2751a16fb"
-                }
-            ],
-            "severity": "error",
-            "type": "hole_clearance"
-        },
-        {
-            "description": "Items shorting two nets (nets RGB_DATA_5V and +3V3)",
-            "items": [
-                {
-                    "description": "Track [RGB_DATA_5V] on F.Cu, length 69.0000 mm",
-                    "pos": {
-                        "x": 115.0,
-                        "y": 35.5
-                    },
-                    "uuid": "403bb7be-f342-4ae1-9fbc-2921ee6ad1b1"
-                },
-                {
-                    "description": "PTH pad 1 [+3V3] of J3V3",
-                    "pos": {
-                        "x": 114.0,
-                        "y": 88.0
-                    },
-                    "uuid": "a7749373-7f89-46b9-8d12-0d7399234f0d"
-                }
-            ],
-            "severity": "error",
-            "type": "shorting_items"
-        },
-        {
-            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.1750 mm)",
-            "items": [
-                {
-                    "description": "Track [RGB_DATA_5V] on F.Cu, length 69.0000 mm",
-                    "pos": {
-                        "x": 115.0,
-                        "y": 35.5
-                    },
-                    "uuid": "403bb7be-f342-4ae1-9fbc-2921ee6ad1b1"
-                },
-                {
-                    "description": "PTH pad 1 [+3V3] of J3V3",
-                    "pos": {
-                        "x": 114.0,
-                        "y": 88.0
-                    },
-                    "uuid": "a7749373-7f89-46b9-8d12-0d7399234f0d"
-                }
-            ],
-            "severity": "error",
-            "type": "hole_clearance"
-        },
-        {
-            "description": "Clearance violation ( clearance 0.2000 mm; actual 0.0713 mm)",
             "items": [
                 {
                     "description": "Via [FRONT_TRIG_5V] on F.Cu - B.Cu",
                     "pos": {
-                        "x": 120.5,
-                        "y": 43.5
+                        "x": 113.5,
+                        "y": 45.0
                     },
-                    "uuid": "468f697b-b665-43a5-b469-17093cb3d171"
+                    "uuid": "867bd9ca-b903-4bac-ad10-c61410ff8426"
                 },
                 {
-                    "description": "PTH pad 1 [GND] of JGND3_2",
+                    "description": "PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG",
                     "pos": {
-                        "x": 122.0,
-                        "y": 42.0
+                        "x": 112.0,
+                        "y": 46.0
                     },
-                    "uuid": "f8885cb0-1a89-43b3-a694-bd574264b858"
+                    "uuid": "b30efb5a-6799-49e4-b3bf-b95d970ea72d"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Via [FRONT_TRIG_5V] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 113.5,
+                        "y": 45.0
+                    },
+                    "uuid": "867bd9ca-b903-4bac-ad10-c61410ff8426"
+                },
+                {
+                    "description": "PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG",
+                    "pos": {
+                        "x": 112.0,
+                        "y": 46.0
+                    },
+                    "uuid": "b30efb5a-6799-49e4-b3bf-b95d970ea72d"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Rear solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Track [RGB_DATA_5V] on B.Cu, length 5.5000 mm",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 100.0
+                    },
+                    "uuid": "9b042eec-540f-4b6e-b881-98e14b99c6c4"
+                },
+                {
+                    "description": "PTH pad 1 [+5V] of J_RGB_5V",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 103.0
+                    },
+                    "uuid": "68c84b1a-bfc8-462d-be92-36f80f28e871"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Items shorting two nets (nets +5V and RGB_DATA_5V)",
+            "items": [
+                {
+                    "description": "PTH pad 1 [+5V] of J_RGB_5V",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 103.0
+                    },
+                    "uuid": "68c84b1a-bfc8-462d-be92-36f80f28e871"
+                },
+                {
+                    "description": "Track [RGB_DATA_5V] on B.Cu, length 5.5000 mm",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 100.0
+                    },
+                    "uuid": "9b042eec-540f-4b6e-b881-98e14b99c6c4"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Track [RGB_DATA_5V] on B.Cu, length 5.5000 mm",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 100.0
+                    },
+                    "uuid": "9b042eec-540f-4b6e-b881-98e14b99c6c4"
+                },
+                {
+                    "description": "PTH pad 1 [+5V] of J_RGB_5V",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 103.0
+                    },
+                    "uuid": "68c84b1a-bfc8-462d-be92-36f80f28e871"
+                }
+            ],
+            "severity": "error",
+            "type": "hole_clearance"
+        },
+        {
+            "description": "Clearance violation ( clearance 0.2000 mm; actual 0.0528 mm)",
+            "items": [
+                {
+                    "description": "PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG",
+                    "pos": {
+                        "x": 112.0,
+                        "y": 46.0
+                    },
+                    "uuid": "b30efb5a-6799-49e4-b3bf-b95d970ea72d"
+                },
+                {
+                    "description": "Track [FRONT_TRIG_5V] on F.Cu, length 4.0000 mm",
+                    "pos": {
+                        "x": 113.5,
+                        "y": 45.0
+                    },
+                    "uuid": "bfe2e03c-d406-4e2b-a691-ac5853635eb0"
                 }
             ],
             "severity": "error",
             "type": "clearance"
         },
         {
-            "description": "Items shorting two nets (nets FRONT_TRIG_5V and GND)",
+            "description": "Items shorting two nets (nets FRONT_TRIG_5V and RIGHT_TRIG_5V)",
             "items": [
                 {
-                    "description": "Track [FRONT_TRIG_5V] on B.Cu, length 33.5000 mm",
+                    "description": "Via [FRONT_TRIG_5V] on F.Cu - B.Cu",
                     "pos": {
-                        "x": 154.0,
-                        "y": 43.5
+                        "x": 113.5,
+                        "y": 45.0
                     },
-                    "uuid": "cee016ff-d66b-4064-8b92-6cee13f375fe"
+                    "uuid": "867bd9ca-b903-4bac-ad10-c61410ff8426"
                 },
                 {
-                    "description": "PTH pad 1 [GND] of JGND3_2",
+                    "description": "PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG",
                     "pos": {
-                        "x": 122.0,
-                        "y": 42.0
+                        "x": 112.0,
+                        "y": 46.0
                     },
-                    "uuid": "f8885cb0-1a89-43b3-a694-bd574264b858"
+                    "uuid": "b30efb5a-6799-49e4-b3bf-b95d970ea72d"
                 }
             ],
             "severity": "error",
             "type": "shorting_items"
+        },
+        {
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG",
+                    "pos": {
+                        "x": 112.0,
+                        "y": 46.0
+                    },
+                    "uuid": "b30efb5a-6799-49e4-b3bf-b95d970ea72d"
+                },
+                {
+                    "description": "Via [FRONT_TRIG_5V] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 113.5,
+                        "y": 45.0
+                    },
+                    "uuid": "867bd9ca-b903-4bac-ad10-c61410ff8426"
+                }
+            ],
+            "severity": "error",
+            "type": "hole_clearance"
+        },
+        {
+            "description": "Items shorting two nets (nets FRONT_TRIG_5V and RIGHT_TRIG_5V)",
+            "items": [
+                {
+                    "description": "Via [FRONT_TRIG_5V] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 113.5,
+                        "y": 45.0
+                    },
+                    "uuid": "867bd9ca-b903-4bac-ad10-c61410ff8426"
+                },
+                {
+                    "description": "PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG",
+                    "pos": {
+                        "x": 112.0,
+                        "y": 46.0
+                    },
+                    "uuid": "b30efb5a-6799-49e4-b3bf-b95d970ea72d"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Tracks crossing",
+            "items": [
+                {
+                    "description": "Track [RGB_DATA_5V] on B.Cu, length 66.5000 mm",
+                    "pos": {
+                        "x": 132.0,
+                        "y": 33.5
+                    },
+                    "uuid": "18cb266e-eb17-4a56-ad9d-d61b35f8d575"
+                },
+                {
+                    "description": "Track [FRONT_TRIG_5V] on B.Cu, length 33.5000 mm",
+                    "pos": {
+                        "x": 154.0,
+                        "y": 45.0
+                    },
+                    "uuid": "6269564c-0be4-4fed-b1d8-e65916bfc4e4"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
+        },
+        {
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG",
+                    "pos": {
+                        "x": 112.0,
+                        "y": 46.0
+                    },
+                    "uuid": "b30efb5a-6799-49e4-b3bf-b95d970ea72d"
+                },
+                {
+                    "description": "Via [FRONT_TRIG_5V] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 113.5,
+                        "y": 45.0
+                    },
+                    "uuid": "867bd9ca-b903-4bac-ad10-c61410ff8426"
+                }
+            ],
+            "severity": "error",
+            "type": "hole_clearance"
+        },
+        {
+            "description": "Tracks crossing",
+            "items": [
+                {
+                    "description": "Track [+5V] on B.Cu, length 27.5000 mm",
+                    "pos": {
+                        "x": 148.0,
+                        "y": 15.0
+                    },
+                    "uuid": "9e9b8942-18dd-4c60-ae88-4f36771d69b8"
+                },
+                {
+                    "description": "Track [LEFT_TRIG_5V] on B.Cu, length 18.5800 mm",
+                    "pos": {
+                        "x": 128.5,
+                        "y": 30.58
+                    },
+                    "uuid": "ec58337a-38a8-482d-8b40-ea2353479bd2"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
+        },
+        {
+            "description": "Tracks crossing",
+            "items": [
+                {
+                    "description": "Track [RGB_DATA_5V] on B.Cu, length 66.5000 mm",
+                    "pos": {
+                        "x": 132.0,
+                        "y": 33.5
+                    },
+                    "uuid": "18cb266e-eb17-4a56-ad9d-d61b35f8d575"
+                },
+                {
+                    "description": "Track [RIGHT_TRIG_5V] on B.Cu, length 34.5000 mm",
+                    "pos": {
+                        "x": 155.0,
+                        "y": 50.0
+                    },
+                    "uuid": "e3049f8d-e56c-4b32-ac0a-e13f4c072525"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
+        },
+        {
+            "description": "Clearance violation ( clearance 0.2000 mm; actual 0.0528 mm)",
+            "items": [
+                {
+                    "description": "Track [FRONT_TRIG_5V] on B.Cu, length 2.0000 mm",
+                    "pos": {
+                        "x": 115.5,
+                        "y": 45.0
+                    },
+                    "uuid": "8a120314-297f-49ab-8a20-5db4322d03e8"
+                },
+                {
+                    "description": "PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG",
+                    "pos": {
+                        "x": 112.0,
+                        "y": 46.0
+                    },
+                    "uuid": "b30efb5a-6799-49e4-b3bf-b95d970ea72d"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Tracks crossing",
+            "items": [
+                {
+                    "description": "Track [+5V] on B.Cu, length 11.0000 mm",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 92.0
+                    },
+                    "uuid": "922d46c4-cc02-4361-a552-b398f523d0db"
+                },
+                {
+                    "description": "Track [RGB_DATA_5V] on B.Cu, length 5.5000 mm",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 100.0
+                    },
+                    "uuid": "9b042eec-540f-4b6e-b881-98e14b99c6c4"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
+        },
+        {
+            "description": "Tracks crossing",
+            "items": [
+                {
+                    "description": "Track [RGB_DATA_5V] on B.Cu, length 33.5000 mm",
+                    "pos": {
+                        "x": 121.5,
+                        "y": 100.0
+                    },
+                    "uuid": "60bdae83-1922-40a3-8c28-c1ff5d10066c"
+                },
+                {
+                    "description": "Track [+5V] on B.Cu, length 11.0000 mm",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 92.0
+                    },
+                    "uuid": "922d46c4-cc02-4361-a552-b398f523d0db"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
+        },
+        {
+            "description": "Tracks crossing",
+            "items": [
+                {
+                    "description": "Track [FRONT_TRIG_5V] on F.Cu, length 5.0000 mm",
+                    "pos": {
+                        "x": 120.5,
+                        "y": 45.0
+                    },
+                    "uuid": "48855a9a-f15f-43fb-994c-de19e160f07d"
+                },
+                {
+                    "description": "Track [+3V3] on F.Cu, length 63.0000 mm",
+                    "pos": {
+                        "x": 116.0,
+                        "y": 25.0
+                    },
+                    "uuid": "983f266a-e073-4734-a068-322c4353eea9"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
         },
         {
             "description": "Items shorting two nets (nets +3V3 and FRONT_TRIG_5V)",
             "items": [
                 {
-                    "description": "PTH pad 1 [+3V3] of J3V3_2",
+                    "description": "Track [+3V3] on F.Cu, length 63.0000 mm",
                     "pos": {
-                        "x": 126.0,
-                        "y": 42.0
+                        "x": 116.0,
+                        "y": 25.0
                     },
-                    "uuid": "630cdad7-d4f7-45c4-8428-587ee71b97b2"
+                    "uuid": "983f266a-e073-4734-a068-322c4353eea9"
                 },
-                {
-                    "description": "Track [FRONT_TRIG_5V] on B.Cu, length 33.5000 mm",
-                    "pos": {
-                        "x": 154.0,
-                        "y": 43.5
-                    },
-                    "uuid": "cee016ff-d66b-4064-8b92-6cee13f375fe"
-                }
-            ],
-            "severity": "error",
-            "type": "shorting_items"
-        },
-        {
-            "description": "Tracks crossing",
-            "items": [
-                {
-                    "description": "Track [RIGHT_TRIG_5V] on B.Cu, length 12.1900 mm",
-                    "pos": {
-                        "x": 142.81,
-                        "y": 25.5
-                    },
-                    "uuid": "b3867813-04ad-4d81-9344-02fed650383d"
-                },
-                {
-                    "description": "Track [LEFT_TRIG_5V] on B.Cu, length 18.5800 mm",
-                    "pos": {
-                        "x": 145.0,
-                        "y": 30.58
-                    },
-                    "uuid": "e9c69fe6-fb74-4641-b662-afc7efef333e"
-                }
-            ],
-            "severity": "error",
-            "type": "tracks_crossing"
-        },
-        {
-            "description": "Clearance violation ( clearance 0.2000 mm; actual 0.0713 mm)",
-            "items": [
                 {
                     "description": "Via [FRONT_TRIG_5V] on F.Cu - B.Cu",
                     "pos": {
-                        "x": 120.5,
-                        "y": 43.5
+                        "x": 115.5,
+                        "y": 45.0
                     },
-                    "uuid": "468f697b-b665-43a5-b469-17093cb3d171"
-                },
-                {
-                    "description": "PTH pad 1 [GND] of JGND3_2",
-                    "pos": {
-                        "x": 122.0,
-                        "y": 42.0
-                    },
-                    "uuid": "f8885cb0-1a89-43b3-a694-bd574264b858"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Tracks crossing",
-            "items": [
-                {
-                    "description": "Track [+5V] on F.Cu, length 5.0000 mm",
-                    "pos": {
-                        "x": 120.5,
-                        "y": 17.88
-                    },
-                    "uuid": "83d8bd10-1299-44bf-bc71-b7c38c32f2c9"
-                },
-                {
-                    "description": "Track [AUX_GPIO2] on F.Cu, length 4.8514 mm",
-                    "pos": {
-                        "x": 120.0,
-                        "y": 20.42
-                    },
-                    "uuid": "f2052d09-85c3-47b2-8426-dfb2890b83e5"
-                }
-            ],
-            "severity": "error",
-            "type": "tracks_crossing"
-        },
-        {
-            "description": "Items shorting two nets (nets +5V and GND)",
-            "items": [
-                {
-                    "description": "Track [+5V] on B.Cu, length 22.3100 mm",
-                    "pos": {
-                        "x": 142.81,
-                        "y": 17.88
-                    },
-                    "uuid": "63c7b805-38e6-4ef5-9faa-01852dcea218"
-                },
-                {
-                    "description": "PTH pad 1 [GND] of U11",
-                    "pos": {
-                        "x": 135.19,
-                        "y": 17.88
-                    },
-                    "uuid": "8ed622f8-9685-4a19-80e7-7cb9c8533054"
+                    "uuid": "e9b2979d-7a4a-41b4-a30c-6dcc1c435f83"
                 }
             ],
             "severity": "error",
             "type": "shorting_items"
         },
         {
-            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)",
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0250 mm)",
             "items": [
                 {
-                    "description": "Track [+5V] on B.Cu, length 22.3100 mm",
+                    "description": "Track [+3V3] on F.Cu, length 63.0000 mm",
                     "pos": {
-                        "x": 142.81,
-                        "y": 17.88
+                        "x": 116.0,
+                        "y": 25.0
                     },
-                    "uuid": "63c7b805-38e6-4ef5-9faa-01852dcea218"
+                    "uuid": "983f266a-e073-4734-a068-322c4353eea9"
                 },
                 {
-                    "description": "PTH pad 1 [GND] of U11",
+                    "description": "Via [FRONT_TRIG_5V] on F.Cu - B.Cu",
                     "pos": {
-                        "x": 135.19,
-                        "y": 17.88
+                        "x": 115.5,
+                        "y": 45.0
                     },
-                    "uuid": "8ed622f8-9685-4a19-80e7-7cb9c8533054"
+                    "uuid": "e9b2979d-7a4a-41b4-a30c-6dcc1c435f83"
                 }
             ],
             "severity": "error",
             "type": "hole_clearance"
         },
         {
-            "description": "Tracks crossing",
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)",
             "items": [
                 {
-                    "description": "Track [RGB_DATA_5V] on B.Cu, length 12.5000 mm",
+                    "description": "PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG",
                     "pos": {
-                        "x": 88.0,
-                        "y": 118.0
+                        "x": 112.0,
+                        "y": 46.0
                     },
-                    "uuid": "334b7b60-b6c4-4e39-af49-46956eed0d77"
+                    "uuid": "b30efb5a-6799-49e4-b3bf-b95d970ea72d"
                 },
                 {
-                    "description": "Track [VIN_PROTECTED] on B.Cu, length 29.2800 mm",
+                    "description": "Via [FRONT_TRIG_5V] on F.Cu - B.Cu",
                     "pos": {
-                        "x": 59.62,
-                        "y": 115.0
+                        "x": 113.5,
+                        "y": 45.0
                     },
-                    "uuid": "aa4299a3-7a87-440b-9993-bc4755904799"
+                    "uuid": "867bd9ca-b903-4bac-ad10-c61410ff8426"
                 }
             ],
             "severity": "error",
-            "type": "tracks_crossing"
+            "type": "hole_clearance"
         },
         {
-            "description": "Tracks crossing",
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)",
             "items": [
                 {
-                    "description": "Track [RGB_DATA_5V] on F.Cu, length 69.0000 mm",
+                    "description": "PTH pad 1 [RIGHT_TRIG_5V] of J_RTRIG",
                     "pos": {
-                        "x": 115.0,
-                        "y": 35.5
+                        "x": 112.0,
+                        "y": 46.0
                     },
-                    "uuid": "403bb7be-f342-4ae1-9fbc-2921ee6ad1b1"
+                    "uuid": "b30efb5a-6799-49e4-b3bf-b95d970ea72d"
                 },
                 {
-                    "description": "Track [+3V3] on F.Cu, length 2.0000 mm",
+                    "description": "Via [FRONT_TRIG_5V] on F.Cu - B.Cu",
                     "pos": {
-                        "x": 116.0,
-                        "y": 88.0
+                        "x": 113.5,
+                        "y": 45.0
                     },
-                    "uuid": "e73cad79-f10c-4af1-b8b8-a6ddfab15adb"
+                    "uuid": "867bd9ca-b903-4bac-ad10-c61410ff8426"
                 }
             ],
             "severity": "error",
-            "type": "tracks_crossing"
-        },
-        {
-            "description": "Via is not connected or connected on only one layer",
-            "items": [
-                {
-                    "description": "Via [+5V] on F.Cu - B.Cu",
-                    "pos": {
-                        "x": 106.0,
-                        "y": 17.88
-                    },
-                    "uuid": "3f15db1f-35d0-4fba-9653-315e5bc1c86d"
-                }
-            ],
-            "severity": "warning",
-            "type": "via_dangling"
+            "type": "hole_clearance"
         }
     ]
 }
