@@ -1,16 +1,8 @@
 ** Drc report for esp32_robot_carrier_v3.kicad_pcb **
-** Created on 2026-08-11T13:33:11 **
+** Created on 2026-08-11T13:35:50 **
 ** Report includes: Errors, Warnings, Exclusions **
 
-** Found 2 DRC violations **
-[solder_mask_bridge]: Rear solder mask aperture bridges items with different nets
-    Rule: board setup solder mask min width; error
-    @(92.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 7.8102 mm
-    @(88.0000 mm, 103.0000 mm): PTH pad 1 [+5V] of J_RGB_5V
-[shorting_items]: Items shorting two nets (nets RGB_DATA_5V and +5V)
-    Local override; error
-    @(92.0000 mm, 100.0000 mm): Track [RGB_DATA_5V] on B.Cu, length 7.8102 mm
-    @(88.0000 mm, 103.0000 mm): PTH pad 1 [+5V] of J_RGB_5V
+** Found 0 DRC violations **
 
 ** Found 0 unconnected pads **
 
