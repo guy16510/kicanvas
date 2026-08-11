@@ -72,7 +72,7 @@ for (const ref of refs.filter((r) => /^[RC]\d+$/.test(r))) {
     const block = footprint(ref);
     if (/0402|0603|0805/.test(block)) failures.push(`${ref}: small passive footprint remains`);
     if (!block.includes("_1206_HAND_SOLDER")) continue;
-    const minimum = new Set(["R43", "R53"]).has(ref) ? 1.3 : 1.5;
+    const minimum = ref === "R53" ? 1.2 : ref === "R43" ? 1.3 : 1.5;
     for (const match of block.matchAll(/\(pad\s+"([^"]+)"\s+smd/g)) {
         const actual = size(pad(ref, match[1]));
         if (!actual || actual[0] < minimum || actual[1] < minimum)
@@ -87,7 +87,8 @@ for (let p = 1; p <= 14; p += 1) {
 }
 for (const ref of ["U6", "U7", "U8", "U9"]) {
     requireText(footprint(ref), "AQY212GH_60V_1.1A_PHOTOMOS", `${ref}: wrong PhotoMOS`);
-    requireAt(ref, [19, { U6: 38, U7: 44, U8: 62, U9: 68 }[ref]]);
+    const expectedX = new Set(["U8", "U9"]).has(ref) ? 18 : 19;
+    requireAt(ref, [expectedX, { U6: 38, U7: 44, U8: 62, U9: 68 }[ref]]);
     for (let p = 1; p <= 4; p += 1) requireSize(ref, String(p), [1.8, 1.8]);
 }
 
@@ -131,8 +132,9 @@ if (failures.length) {
 }
 
 console.log("refined hand-solder validation passed");
-console.log("- 1206 passives retained, crowded lands compacted only where DRC required");
+console.log("- 1206 passives retained; only R53 uses 1.2 mm lands for proven local clearance");
 console.log("- U11 DIP logic bay and AQY212GH DIP PhotoMOS geometry verified");
+console.log("- U8/U9 are shifted 1 mm left while retaining 1.8 mm through-hole pads");
 console.log("- U4 restored to validated MSOP copper, U10 retains toe-only extension");
 console.log("- DNP AHCT anchors have no paste and stay out of BOM/CPL");
 console.log("- final 156 x 189 mm outline and thermal-relief contract verified");
