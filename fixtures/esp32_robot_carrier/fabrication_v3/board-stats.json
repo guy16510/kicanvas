@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "date": "2026-08-11T13:42:37",
+    "date": "2026-08-11T13:50:44",
     "generator": "KiCad 10.0.5-10.0.5~ubuntu24.04.1",
     "project": "esp32_robot_carrier_v3",
     "board_name": "esp32_robot_carrier_v3"
@@ -133,9 +133,9 @@
     {
       "count": 6,
       "shape": "Round",
-      "x_size": "1.1000 mm",
-      "y_size": "1.1000 mm",
-      "plated": true,
+      "x_size": "3.2000 mm",
+      "y_size": "3.2000 mm",
+      "plated": false,
       "source": "Pad",
       "start_layer": "F.Cu",
       "stop_layer": "B.Cu"
@@ -153,9 +153,9 @@
     {
       "count": 6,
       "shape": "Round",
-      "x_size": "3.2000 mm",
-      "y_size": "3.2000 mm",
-      "plated": false,
+      "x_size": "1.1000 mm",
+      "y_size": "1.1000 mm",
+      "plated": true,
       "source": "Pad",
       "start_layer": "F.Cu",
       "stop_layer": "B.Cu"
