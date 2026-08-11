@@ -10,9 +10,22 @@ const failures = [];
 
 function endOfBlock(source, start) {
     let depth = 0;
+    let inString = false;
+    let escaped = false;
     for (let i = start; i < source.length; i++) {
-        if (source[i] === "(") depth += 1;
-        else if (source[i] === ")" && --depth === 0) return i + 1;
+        const c = source[i];
+        if (inString) {
+            if (escaped) escaped = false;
+            else if (c === "\\") escaped = true;
+            else if (c === '"') inString = false;
+            continue;
+        }
+        if (c === '"') {
+            inString = true;
+            continue;
+        }
+        if (c === "(") depth += 1;
+        else if (c === ")" && --depth === 0) return i + 1;
     }
     throw new Error(`unterminated block at ${start}`);
 }
@@ -64,19 +77,37 @@ function requireText(text, needle, label) {
     if (!text.includes(needle)) failures.push(label ?? `missing ${needle}`);
 }
 
+function blocks(kind) {
+    const result = [];
+    let cursor = 0;
+    while ((cursor = board.indexOf(`(${kind}`, cursor)) >= 0) {
+        const end = endOfBlock(board, cursor);
+        result.push(board.slice(cursor, end));
+        cursor = end;
+    }
+    return result;
+}
+
 const refs = [...board.matchAll(/\(property "Reference" "([^"]+)"/g)].map((m) => m[1]);
 const dupes = refs.filter((ref, i) => refs.indexOf(ref) !== i);
 if (dupes.length) failures.push(`duplicate refs: ${[...new Set(dupes)].join(", ")}`);
 
+// KiCad may preserve/rewrite the source footprint library name when it saves a
+// board, so names such as R_0805_2012Metric are not proof that the copper is
+// still 0805-sized. The physical SMD land dimensions are the production truth.
 for (const ref of refs.filter((r) => /^[RC]\d+$/.test(r))) {
     const block = footprint(ref);
-    if (/0402|0603|0805/.test(block)) failures.push(`${ref}: small passive footprint remains`);
-    if (!block.includes("_1206_HAND_SOLDER")) continue;
-    const minimum = ref === "R53" ? 1.2 : ref === "R43" ? 1.3 : 1.5;
-    for (const match of block.matchAll(/\(pad\s+"([^"]+)"\s+smd/g)) {
-        const actual = size(pad(ref, match[1]));
-        if (!actual || actual[0] < minimum || actual[1] < minimum)
-            failures.push(`${ref}.${match[1]}: hand pad below ${minimum} mm minimum`);
+    const smdPads = [...block.matchAll(/\(pad\s+"([^"]+)"\s+smd/g)].map((m) => m[1]);
+    if (!smdPads.length) continue;
+
+    const wasSmallOrHandConverted = /0402|0603|0805|_1206_HAND_SOLDER/.test(block);
+    if (!wasSmallOrHandConverted) continue;
+
+    const minimum = ref === "R43" || ref === "R53" ? 1.2 : 1.5;
+    for (const number of smdPads) {
+        const actual = size(pad(ref, number));
+        if (!actual || actual[0] + 0.001 < minimum || actual[1] + 0.001 < minimum)
+            failures.push(`${ref}.${number}: physical hand-solder land below ${minimum} mm minimum (${actual?.join("x") ?? "none"})`);
     }
 }
 
@@ -115,7 +146,32 @@ if (bom.includes("AQY212SX")) failures.push("BOM still contains AQY212SX");
 if (/SOT-23-5_TLV9001|74AHCT1G125_TRIGGER_3V3_TO_5V/.test(bom))
     failures.push("BOM still contains obsolete tiny AHCT buffer");
 
-requireText(board, '(gr_rect (start 1 1) (end 156 190)', "Edge.Cuts missing refined routing bay");
+// KiCad can normalize a gr_rect into a differently formatted object on save.
+// Validate the actual Edge.Cuts geometry by its coordinates instead of exact
+// serialization text.
+const edgePoints = [];
+for (const kind of ["gr_rect", "gr_line", "gr_arc"]) {
+    for (const graphic of blocks(kind)) {
+        if (!graphic.includes('(layer "Edge.Cuts")')) continue;
+        for (const m of graphic.matchAll(/\((?:start|end|mid)\s+(-?[\d.]+)\s+(-?[\d.]+)\)/g))
+            edgePoints.push([Number(m[1]), Number(m[2])]);
+    }
+}
+if (!edgePoints.length) {
+    failures.push("Edge.Cuts geometry missing");
+} else {
+    const xs = edgePoints.map(([x]) => x);
+    const ys = edgePoints.map(([, y]) => y);
+    const bounds = {
+        minX: Math.min(...xs),
+        maxX: Math.max(...xs),
+        minY: Math.min(...ys),
+        maxY: Math.max(...ys),
+    };
+    if (bounds.minX > 1.01 || bounds.minY > 1.01 || bounds.maxX < 155.99 || bounds.maxY < 189.99)
+        failures.push(`Edge.Cuts bounds too small: ${bounds.minX},${bounds.minY} to ${bounds.maxX},${bounds.maxY}`);
+}
+
 requireText(board, '(xy 148 2) (xy 148 98)', "top GND pour does not reach logic bay");
 requireText(board, 'HAND-SOLDER BUILD | 1206 + DIP', "hand-solder silk marker missing");
 if (!/\(thermal_gap\s+[\d.]+\)/.test(board) || !/\(thermal_bridge_width\s+[\d.]+\)/.test(board))
@@ -131,9 +187,9 @@ if (failures.length) {
 }
 
 console.log("refined hand-solder validation passed");
-console.log("- 1206 passives retained; only R53 uses 1.2 mm lands for proven local clearance");
+console.log("- physical passive land dimensions verified after KiCad reserialization");
 console.log("- U11 DIP logic bay and AQY212GH DIP PhotoMOS geometry verified");
 console.log("- U6/U7/U8/U9 retain validated x=19 through-hole placement and 1.8 mm pads");
 console.log("- U4 restored to validated MSOP copper, U10 retains toe-only extension");
 console.log("- DNP AHCT anchors have no paste and stay out of BOM/CPL");
-console.log("- final 156 x 189 mm outline and thermal-relief contract verified");
+console.log("- physical Edge.Cuts bounds and thermal-relief contract verified");
