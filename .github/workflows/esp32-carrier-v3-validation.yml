@@ -139,22 +139,20 @@ jobs:
           path: artifacts
           if-no-files-found: error
 
-      - name: Commit validated generated production files to PR branch
+      - name: Commit deterministic generated board sources to PR branch
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
-            scripts/apply-esp32-carrier-v3-hand-solder.mjs \
             fixtures/esp32_robot_carrier/BOM_JLCPCB.csv \
             fixtures/esp32_robot_carrier/CPL_JLCPCB.csv \
             fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb \
-            fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb.gz.b64 \
-            fixtures/esp32_robot_carrier/fabrication_v3
+            fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb.gz.b64
           if git diff --cached --quiet; then
-            echo "Generated production files are already current."
+            echo "Deterministic generated board sources are already current."
           else
-            git commit -m "build: refresh hand-solder carrier fabrication"
+            git commit -m "build: refresh hand-solder carrier board sources"
             git pull --rebase origin "${{ github.head_ref }}" || true
             git push origin "HEAD:${{ github.head_ref }}"
           fi
