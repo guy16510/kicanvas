@@ -10,6 +10,7 @@ on:
       - 'scripts/add-esp32-carrier-v3-battery-sense.mjs'
       - 'scripts/apply-esp32-carrier-v3-hand-solder.mjs'
       - 'scripts/fix-esp32-carrier-hand-solder-transform.mjs'
+      - 'scripts/inspect-esp32-carrier-v3-final.mjs'
       - 'scripts/export-esp32-carrier-v3-*.mjs'
       - 'scripts/validate-esp32-carrier-v3-*.mjs'
       - '.github/workflows/esp32-carrier-v3-validation.yml'
@@ -31,6 +32,9 @@ jobs:
 
       - name: Generate electrically validated final carrier
         run: node scripts/add-esp32-carrier-v3-battery-sense.mjs
+
+      - name: Inspect final carrier geometry
+        run: node scripts/inspect-esp32-carrier-v3-final.mjs
 
       - name: Validate final electrical and system contract before package substitutions
         run: |
