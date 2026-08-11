@@ -13,6 +13,7 @@ on:
       - 'scripts/refine-esp32-carrier-v3-hand-solder-drc.mjs'
       - 'scripts/refine-esp32-carrier-v3-hand-solder-drc4.mjs'
       - 'scripts/refine-esp32-carrier-v3-hand-solder-drc5.mjs'
+      - 'scripts/refine-esp32-carrier-v3-hand-solder-drc6.mjs'
       - 'scripts/fix-esp32-carrier-hand-solder-transform.mjs'
       - 'scripts/inspect-esp32-carrier-v3-final.mjs'
       - 'scripts/export-esp32-carrier-v3-*.mjs'
@@ -59,6 +60,7 @@ jobs:
           node scripts/refine-esp32-carrier-v3-hand-solder-drc.mjs
           node scripts/refine-esp32-carrier-v3-hand-solder-drc4.mjs
           node scripts/refine-esp32-carrier-v3-hand-solder-drc5.mjs
+          node scripts/refine-esp32-carrier-v3-hand-solder-drc6.mjs
           node scripts/export-esp32-carrier-v3-cpl.mjs fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
           node scripts/validate-esp32-carrier-v3-hand-solder-refined.mjs
 
@@ -85,6 +87,7 @@ jobs:
           cp artifacts/drc.json artifacts/drc.rpt fixtures/esp32_robot_carrier/fabrication_v3/
 
       - name: Persist failing native DRC report
+        continue-on-error: true
         if: steps.native_drc.outcome == 'failure' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
           mkdir -p debug
@@ -95,7 +98,8 @@ jobs:
           git add debug/esp32-carrier-v3-drc.json debug/esp32-carrier-v3-drc.rpt
           if ! git diff --cached --quiet; then
             git commit -m "debug: persist carrier native DRC report"
-            git push origin "HEAD:${{ github.head_ref }}"
+            git pull --rebase origin "${{ github.head_ref }}" || true
+            git push origin "HEAD:${{ github.head_ref }}" || true
           fi
 
       - name: Require native DRC success
@@ -135,5 +139,6 @@ jobs:
             echo "Generated production files are already current."
           else
             git commit -m "build: refresh hand-solder carrier fabrication"
+            git pull --rebase origin "${{ github.head_ref }}" || true
             git push origin "HEAD:${{ github.head_ref }}"
           fi
