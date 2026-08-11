@@ -10,6 +10,7 @@ on:
       - 'scripts/add-esp32-carrier-v3-battery-sense.mjs'
       - 'scripts/apply-esp32-carrier-v3-hand-solder.mjs'
       - 'scripts/finalize-esp32-carrier-v3-hand-solder.mjs'
+      - 'scripts/refine-esp32-carrier-v3-hand-solder-drc.mjs'
       - 'scripts/fix-esp32-carrier-hand-solder-transform.mjs'
       - 'scripts/inspect-esp32-carrier-v3-final.mjs'
       - 'scripts/export-esp32-carrier-v3-*.mjs'
@@ -48,8 +49,14 @@ jobs:
           node scripts/apply-esp32-carrier-v3-hand-solder.mjs --existing
           node scripts/finalize-esp32-carrier-v3-hand-solder.mjs
 
-      - name: Validate hand-solder production contract
+      - name: Validate package-conversion contract
         run: node scripts/validate-esp32-carrier-v3-hand-solder.mjs
+
+      - name: Refine hand-solder layout for native DRC
+        run: |
+          node scripts/refine-esp32-carrier-v3-hand-solder-drc.mjs
+          node scripts/export-esp32-carrier-v3-cpl.mjs fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
+          node scripts/validate-esp32-carrier-v3-hand-solder-refined.mjs
 
       - name: Install KiCad 10
         run: |
@@ -67,7 +74,7 @@ jobs:
           node scripts/validate-esp32-carrier-v3-drc.mjs artifacts/drc.json
           node scripts/sync-esp32-carrier-v3-b64.mjs
           node scripts/export-esp32-carrier-v3-cpl.mjs "$BOARD"
-          node scripts/validate-esp32-carrier-v3-hand-solder.mjs "$BOARD"
+          node scripts/validate-esp32-carrier-v3-hand-solder-refined.mjs "$BOARD"
           cp "$BOARD" artifacts/esp32_robot_carrier_v3.kicad_pcb
           cp artifacts/drc.json artifacts/drc.rpt fixtures/esp32_robot_carrier/fabrication_v3/
 
