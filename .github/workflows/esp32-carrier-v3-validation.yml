@@ -37,6 +37,18 @@ jobs:
       - name: Repair hand-solder transform source if needed
         run: node scripts/fix-esp32-carrier-hand-solder-transform.mjs
 
+      - name: Restore base-stage BOM for pre-transform system validation
+        run: |
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          if [ -n "$BASE_SHA" ]; then
+            git fetch --no-tags --depth=1 origin "$BASE_SHA"
+            BASE_REF="$BASE_SHA"
+          else
+            git fetch --no-tags --depth=1 origin main
+            BASE_REF="origin/main"
+          fi
+          git show "$BASE_REF:fixtures/esp32_robot_carrier/BOM_JLCPCB.csv" > fixtures/esp32_robot_carrier/BOM_JLCPCB.csv
+
       - name: Generate electrically validated final carrier
         run: node scripts/add-esp32-carrier-v3-battery-sense.mjs
 
