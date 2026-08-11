@@ -15,6 +15,7 @@ on:
       - 'scripts/refine-esp32-carrier-v3-hand-solder-drc5.mjs'
       - 'scripts/refine-esp32-carrier-v3-hand-solder-drc6.mjs'
       - 'scripts/refine-esp32-carrier-v3-hand-solder-drc7.mjs'
+      - 'scripts/refine-esp32-carrier-v3-hand-solder-drc8.mjs'
       - 'scripts/fix-esp32-carrier-hand-solder-transform.mjs'
       - 'scripts/inspect-esp32-carrier-v3-final.mjs'
       - 'scripts/export-esp32-carrier-v3-*.mjs'
@@ -63,6 +64,7 @@ jobs:
           node scripts/refine-esp32-carrier-v3-hand-solder-drc5.mjs
           node scripts/refine-esp32-carrier-v3-hand-solder-drc6.mjs
           node scripts/refine-esp32-carrier-v3-hand-solder-drc7.mjs
+          node scripts/refine-esp32-carrier-v3-hand-solder-drc8.mjs
           node scripts/export-esp32-carrier-v3-cpl.mjs fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb
           node scripts/validate-esp32-carrier-v3-hand-solder-refined.mjs
 
