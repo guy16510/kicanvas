@@ -59,9 +59,35 @@ function replaceFootprints(transform) {
     }
 }
 
+function topLevelIndex(token) {
+    let depth = 0;
+    let inString = false;
+    let escaped = false;
+    for (let i = 0; i < board.length; i += 1) {
+        const character = board[i];
+        if (inString) {
+            if (escaped) escaped = false;
+            else if (character === "\\") escaped = true;
+            else if (character === '"') inString = false;
+            continue;
+        }
+        if (character === '"') {
+            inString = true;
+            continue;
+        }
+        if (character === "(") {
+            if (depth === 1 && board.startsWith(token, i)) return i;
+            depth += 1;
+            continue;
+        }
+        if (character === ")") depth -= 1;
+    }
+    return -1;
+}
+
 function insertBefore(token, text) {
-    const at = board.indexOf(token);
-    if (at < 0) throw new Error(`insertion token not found: ${token}`);
+    const at = topLevelIndex(token);
+    if (at < 0) throw new Error(`top-level insertion token not found: ${token}`);
     board = board.slice(0, at) + text + "\n  " + board.slice(at);
 }
 
