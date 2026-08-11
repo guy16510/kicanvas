@@ -74,7 +74,7 @@ for (const zone of zones) console.log(JSON.stringify(zone));
 console.log("=== FOOTPRINT POSITIONS ===");
 for (const fp of footprints.sort((a, b) => (a.y ?? 0) - (b.y ?? 0) || (a.x ?? 0) - (b.x ?? 0))) console.log(JSON.stringify(fp));
 
-const targetRefs = new Set(["U_TRIG_L", "U_TRIG_F", "U_TRIG_R", "U_RGB", "U6", "U7", "U8", "U9", "U4", "U10"]);
+const targetRefs = new Set(["U_TRIG_L", "U_TRIG_F", "U_TRIG_R", "U_RGB", "U6", "U7", "U8", "U9", "U4", "U10", "R43", "R53"]);
 console.log("=== TARGET FOOTPRINT BLOCKS ===");
 for (const block of allFootprints) {
   const ref = block.match(/\(property "Reference" "([^"]+)"/)?.[1];
@@ -87,6 +87,20 @@ for (const kind of ["segment", "via"]) {
   for (const block of topLevelBlocks(kind)) {
     const net = Number(block.match(/\(net\s+(\d+)\)/)?.[1] ?? -1);
     if (targetNets.has(net)) console.log(block.replace(/\s+/g, " "));
+  }
+}
+
+const netNames = new Map();
+for (const match of board.matchAll(/\(net\s+(\d+)\s+"([^"]+)"\)/g)) netNames.set(Number(match[1]), match[2]);
+const obstacleNames = new Set(["+3V3", "+5V", "GND", "L_THROTTLE_FILTERED", "SERVO_SIG"]);
+const obstacleNets = new Set([...netNames.entries()].filter(([, name]) => obstacleNames.has(name)).map(([id]) => id));
+console.log("=== OBSTACLE NET MAP ===");
+for (const id of [...obstacleNets].sort((a, b) => a - b)) console.log(`${id}: ${netNames.get(id)}`);
+console.log("=== OBSTACLE ROUTED ITEMS ===");
+for (const kind of ["segment", "via"]) {
+  for (const block of topLevelBlocks(kind)) {
+    const net = Number(block.match(/\(net\s+(\d+)\)/)?.[1] ?? -1);
+    if (obstacleNets.has(net)) console.log(`${netNames.get(net)} :: ${block.replace(/\s+/g, " ")}`);
   }
 }
 
