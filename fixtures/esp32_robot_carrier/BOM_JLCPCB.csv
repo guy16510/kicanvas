@@ -35,11 +35,11 @@ Comment,Designator,Footprint,LCSC Part #,Manufacturer,Manufacturer Part Number,A
 "100k 1pct","R9,R11,R15,R17,R29,R30,R53",0805,,Yageo,RC0805FR-07100KL,SMT; R53 holds the 24V servo signal inactive during ESP32 reset
 "240k 1pct","R40,R41",0805,,Yageo,RC0805FR-07240KL,SMT; >=50V working voltage
 "470k 1pct","R39",0805,,Yageo,RC0805FR-07470KL,SMT
-"806k 1pct UWS trim-up","R44",0805,,Yageo,RC0805FR-07806KL,SMT; sets nominal 5V rail to approximately 5.10V per Murata trim equation
 "2.45M 1pct","R37,R38",0805,,Yageo,RC0805FR-072M45L,SMT; series pair shares surge voltage
 "74AHCT1G125 5V buffer","U_RGB,U_TRIG_L,U_TRIG_F,U_TRIG_R",SOT-23-5,C842287,Texas Instruments,SN74AHCT1G125DBVR,SMT; DBV pinout required
 "Dual rail-to-rail throttle op amp","U10",SOIC-8,,Texas Instruments,TLV9002IDR,SMT; standard D-package pinout; 5V supply; both channels gain 1.2745
 "60V 0.5A PhotoMOS floating contact","U6,U7,U8,U9",SOP-4,,Panasonic Industry,AQY212SX,SMT; 5mA LED drive; 1.5kVrms I/O isolation
 "LTC4367 overvoltage controller","U4",MSOP-8,,Analog Devices,LTC4367IMS8#PBF,SMT
-"5V isolated DC-DC module","PS1",Murata_UWS_Q48_THT,,Murata Power Solutions,UWS-5/10-Q48N-C,Hand/THT; 18-75V input; 8A low-line; 5.10V trim limits high-line output to 9.8A/50W; negative-logic enable
-"24V 2.5A isolated DC-DC module","PS2",Traco_TEN60WIN_THT,,Traco Power,TEN 60-4815WIN,Hand/THT; active 60W module; 18-75V input; passive-on remote
+"4-position 5.08mm external buck terminal","J_BUCK_5V,J_BUCK_24V",TerminalBlock_1x04_P5.08,,Generic,KF301-5.08-4P-compatible,"Hand/THT; 4-position 5.08mm; use >=60VDC and >=10A-rated connector; pin order VIN+, VIN-, OUT-, OUT+"
+"External 42V to 5V buck module","MOD_5V",Off-board,,Generic,60V+-input buck module,"Off-board; non-isolated is acceptable; input absolute max >=60V, 75V+ preferred; set output to 5.0-5.1V before connecting; >=6A verified continuous output; connect to J_BUCK_5V"
+"External 42V to 24V buck module","MOD_24V",Off-board,,Generic,60V+-input buck module,"Off-board; non-isolated is acceptable; input absolute max >=60V, 75V+ preferred; set output to 24V before connecting; >=3A verified continuous output, 5A+ advertised preferred; connect to J_BUCK_24V"
