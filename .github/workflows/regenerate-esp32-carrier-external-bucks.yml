@@ -1,0 +1,41 @@
+name: Regenerate ESP32 carrier external bucks
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/generate-esp32-carrier-v3-external-bucks.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Generate carrier with external buck terminals
+        run: node scripts/generate-esp32-carrier-v3-external-bucks.mjs
+
+      - name: Commit generated PCB and manufacturing files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb \
+            fixtures/esp32_robot_carrier/esp32_robot_carrier_v3.kicad_pcb.gz.b64 \
+            fixtures/esp32_robot_carrier/BOM_JLCPCB.csv \
+            fixtures/esp32_robot_carrier/CPL_JLCPCB.csv
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git commit -m "Replace carrier DC-DC bricks with external buck terminals"
+          git push
