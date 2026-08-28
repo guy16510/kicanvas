@@ -19,5 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate KiCad design constraints
+      - name: Validate Rev B design constraints
         run: node fixtures/pest_management_power_board/validate_design.mjs
+      - name: Validate Rev C design constraints
+        run: node fixtures/pest_management_power_board/validate_rev_c.mjs
