@@ -1,53 +1,52 @@
-# Rev C architecture: real 5 kV / 10 W supply + USB-C charging
+# Rev C architecture: ultra-budget 2S USB-C insect-zapper carrier
 
 ## Design target
 
-Rev C replaces the generic/advertised "1000KV" pulse module with a legitimately specified enclosed high-voltage DC/DC supply and adds USB-C charging for a protected 2S Li-ion pack.
+Rev C is now optimized for a cheap hobby build rather than premium power electronics. The PCB remains a low-voltage carrier/interface board. The high-voltage source is still a sealed, prebuilt commercial insect-zapper module; its internal HV circuitry is not reproduced on the PCB.
 
-The high-voltage converter is **not built on this PCB**. The board only handles low-voltage battery power, charging, switching, transient support, a 12 V boost stage, and isolated landing points for the sealed HV supply.
+Target philosophy: spend money only where it materially affects function. Use commodity daughterboards, direct solder pads, common electrolytics and a replaceable fuse.
 
-## Selected power chain
+## Budget power chain
 
-1. **Battery:** protected/balanced 2S Li-ion pack, 7.4 V nominal / 8.4 V full.
-2. **USB-C charger:** 2S 8.4 V CC/CV charger from 5 V USB-C. Production-quality reference architecture: TI BQ25883/BQ25886 family. For the Rev C carrier PCB, CHG1 is a replaceable 39 x 18 mm 2S USB-C charger daughterboard footprint so the charger can be serviced independently.
-3. **Fuse:** F1 on the discharge/HV path. Start with 2 A fast acting while cell capability is unknown.
-4. **Switch:** heavy DC-rated momentary switch.
-5. **Transient reservoir:** C1/C2 low-ESR bulk capacitors on the 2S rail, plus C3 bypass.
-6. **12 V boost:** Pololu U3V70F12 or equivalent regulated 12 V boost module. It accepts the full 2S voltage range and has true shutdown, current limiting, reverse-voltage protection, short-circuit protection, and thermal protection.
-7. **HV converter:** Analog Technologies **AHV12V5KV2MAW**, enclosed 11-13 V input, 5 kV output, 2 mA maximum, 10 W rated output.
-8. **Grid:** separate HV+ and HV- terminals with the existing HV clearance/slot strategy.
+1. **Battery:** 2S 18650 pack, 7.4 V nominal / 8.4 V full, with an inexpensive 2S protection/BMS board.
+2. **USB-C charging:** generic 5 V USB-C to 8.4 V 2S CC/CV charger daughterboard. A TP5100-class 2S charging module is an acceptable hobby reference if the actual module explicitly supports 2S / 8.4 V charging.
+3. **Fuse:** inexpensive replaceable 5x20 mm fuse on the HV-load path. Start conservatively around 2 A while the cells are unidentified.
+4. **Switch:** inexpensive panel-mount momentary switch on the low-voltage side.
+5. **Transient support:** one 1000-2200 uF electrolytic close to the HV module input. A second bulk capacitor is optional only if supply sag is observed.
+6. **Voltage conversion:** omit it whenever possible. Prefer a sealed HV zapper module whose input range includes the 2S battery voltage. If conversion is unavoidable, use a commodity XL6009-class boost module or LM2596-class buck module selected to match the HV module input.
+7. **HV converter:** generic potted insect-killer / mosquito-zapper high-voltage module in the roughly 3-6 kV class, selected for low cost, compatible input voltage and good recovery when the mesh is loaded. Ignore marketplace '400kV/1000kV' naming as a meaningful electrical specification.
+8. **Grid:** direct insulated flying leads or widely separated solder/terminal landing points.
 
-## Why this is materially different from the "1000KV" module
+## What was removed from the expensive Rev C concept
 
-The AHV12V5KV2MAW has a real specified load rating: 5,000 V at up to 2 mA, or 10 W. That makes the design target output power/recovery instead of open-circuit arc length or an implausible marketing voltage.
+- Analog Technologies 5 kV / 10 W converter: removed.
+- Pololu high-current 12 V boost converter: removed.
+- Premium Panasonic/Nichicon/WIMA parts as requirements: removed.
+- Industrial terminal blocks everywhere: removed where direct solder pads are sufficient.
+- Dual 2200 uF capacitor bank as a requirement: reduced to one inexpensive bulk capacitor, with a second footprint optional.
+- Integrated production-grade USB charging IC design: replaced by a cheap serviceable daughterboard.
 
-The expected low-voltage demand is roughly 14-16 W after allowing for the HV converter's published efficiency and the 12 V boost stage. From a 7.4 V pack that is approximately 2-2.5 A, depending on actual efficiency and load. Because the present cells are unidentified, Rev C retains a conservative 2 A starting fuse and requires a protected pack. If the converter repeatedly opens a 2 A fuse, the answer is to identify/use cells with a known discharge rating rather than silently increasing the fuse.
+## Cost target
 
-## USB-C charging
+Typical hobby-marketplace target, excluding cells, mesh and enclosure:
 
-CHG1 is intentionally a module footprint rather than a hand-authored charger IC implementation. Requirements for the installed daughterboard:
+- USB-C 2S charger module: roughly $1-3 class
+- 2S BMS: roughly $1 class
+- optional commodity buck/boost module: roughly $1-3 class
+- potted insect-zapper HV module: roughly $3-8 class
+- fuse, switch, capacitors, connectors/wire: a few dollars
+- small PCB: low single-digit dollars in quantity from budget fabs
 
-- USB Type-C receptacle
-- 5 V USB input
-- 2S Li-ion CC/CV charge termination at 8.4 V
-- 1 A charge current preferred for unidentified/older 18650 cells
-- output to protected/balanced pack
-- no requirement to run the HV system while charging
+The intended electronics BOM is therefore roughly **$10-20**, depending mostly on the chosen HV module and whether a separate DC/DC converter is needed.
 
-A production revision should replace CHG1 with a directly integrated charger based on TI's BQ25883/BQ25886 reference design after the battery cell type and pack architecture are fixed.
+## USB-C charging rule
 
-## Charging / operating rule
+Charge with the HV system switched off. The charger module only needs to charge the 2S pack; it does not need to power the insect grid while USB is connected.
 
-Rev C is intended to charge with the HV system switched off. Do not energize the insect grid while the USB-C cable is connected. This avoids coupling a grounded USB supply/host into a high-voltage appliance and avoids asking a small charger to support the HV load.
+## Layout strategy
 
-## HV layout
+The existing Rev C carrier geometry keeps the low-voltage region separate from the HV output region and retains a routed isolation slot. Commodity modules should be attached with short low-voltage wiring and insulated HV flying leads rather than forcing unknown marketplace board dimensions into the PCB footprint.
 
-- Keep `HV_Grid` at >= 10 mm clearance as a project minimum.
-- Keep HV+ and HV- in separate corridors.
-- Maintain the routed isolation slot between HV output regions.
-- Do not route USB, charger, battery, or 12 V copper into the HV region.
-- Final clearance/creepage must still be checked against the exact 5 kV module, enclosure, contamination environment, altitude, connector system, and product-safety requirements.
+## Battery note
 
-## Battery warning
-
-Do not make a permanent 2S pack from two random unmatched loose cells. Two series cells should be matched in chemistry, capacity, age, state of health, and state of charge, and managed by a 2S protection/balancing system. The charger does not make an unsafe or mismatched pack safe.
+The charger and BMS do not turn damaged or badly mismatched cells into a safe pack. For a hobby build, at minimum use two cells of the same chemistry and approximately similar capacity/state of health, and discard cells that heat excessively or show abnormal voltage behavior.
