@@ -1,0 +1,9 @@
+(version 1)
+
+(rule "HV_Grid minimum clearance"
+  (condition "A.NetClass == 'HV_Grid' && B.NetClass == 'HV_Grid'")
+  (constraint clearance (min 10mm)))
+
+(rule "HV to non-HV minimum clearance"
+  (condition "A.NetClass == 'HV_Grid' || B.NetClass == 'HV_Grid'")
+  (constraint clearance (min 10mm)))
