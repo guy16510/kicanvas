@@ -1,14 +1,16 @@
-Reference,Qty,Function,Specification,Budget Part / Family,Notes
-BT1,1,Battery pack,Protected 2S Li-ion 7.4V nominal 8.4V full; modest discharge capability,"Generic 2S 18650 holder + inexpensive 2S BMS",Use two reasonably matched cells; do not rely on bare loose cells with no protection
-CHG1,1,USB-C 2S charger,5V USB-C input; 8.4V CC/CV output; approximately 1A,"Generic USB-C 2S 8.4V charger daughterboard / TP5100-class 2S charger module",Use a module that explicitly supports 2S / 8.4V charging; charge with HV system off
-F1,1,HV path fuse,Replaceable low-voltage fuse; start around 2A,"Generic 5x20mm fuse + PCB clips",Cheap sacrificial current limit is preferred over oversizing unknown cells
-SW1,1,HV enable switch,Normally-open momentary low-voltage switch rated for a few amps DC,"Generic panel-mount momentary pushbutton with verified DC contact rating",Only switches the low-voltage side
-C1,1,Bulk input capacitor,1000uF to 2200uF 16V or 25V electrolytic,"Generic radial electrolytic",One inexpensive bulk capacitor is sufficient for the budget build
-C2,1,Optional extra bulk capacitor,1000uF to 2200uF 16V or 25V electrolytic,"Generic radial electrolytic",DNP by default; populate only if battery-side sag is observed
-C3,1,Fast bypass,0.1uF to 1uF 25V ceramic or film,"Generic ceramic/film capacitor",Use whatever common part is on hand
-U1,1,Optional voltage converter,Commodity adjustable DC/DC daughterboard if selected HV module requires a different input voltage,"XL6009-class boost module or LM2596-class buck module as appropriate",Prefer an HV module that can run directly from the 2S pack so U1 can be omitted entirely
-HV1,1,High-voltage converter,Sealed prebuilt insect-zapper HV module; real input range compatible with selected low-voltage rail,"Generic potted insect-killer / mosquito-zapper HV module, approximately 3-6kV class",Ignore fantasy 1000kV marketing claims; choose by input voltage, observed recovery under load, and price; do not reproduce HV circuitry on this PCB
-J2,1,HV module low-voltage interface,Two-position removable connector or solder pads,"Generic 5.08mm terminal block or direct wire pads",Direct solder pads are cheapest if module is permanently installed
-J3,1,HV positive mesh output,Insulated flying lead or separated screw terminal,"Direct solder/flying lead preferred for lowest cost",Maintain physical isolation and enclosure protection
-J4,1,HV negative mesh output,Insulated flying lead or separated screw terminal,"Direct solder/flying lead preferred for lowest cost",Maintain physical isolation and enclosure protection
-PCB,1,Rev C budget carrier PCB,2-layer FR4; wide LV copper; HV separation slot,"Custom Rev C carrier",Commodity modules mount by wires/headers so exact marketplace module dimensions can vary
+Reference,Qty,Function,Specification,DigiKey-verified part,Approx single-qty price,Availability / sourcing note
+USB1,1,USB-C power input,5V sink-only USB-C receptacle,"GCT USB4105-GF-A",$0.80,"DigiKey stocked; use correct CC resistors for sink configuration"
+CHG1,1,2S Li-ion charger IC,2-cell Li-ion charger from 5V USB input; 8.4V pack target,"Texas Instruments BQ25883RGET",few dollars,"DigiKey active/available; requires datasheet reference-design inductor/caps/resistors"
+PROT1,1,2S battery protection IC,2-cell Li-ion over-current/over/under-voltage protection,"ABLIC S-8252AAU-M6T1U",$2.22,"DigiKey stocked; requires external MOSFETs/passives per datasheet"
+F1,1,Input fuse,2A fast-blow 5x20mm,"Littelfuse 0217002.MXP (DigiKey F1723-ND)",$0.57,"20k+ reported in stock when checked 2026-08-28"
+F1-HOLDER,1,Fuse holder,5x20mm PCB holder 5A,"Keystone 4527 (DigiKey 36-4527-ND)",$0.79,"35k+ reported in stock when checked 2026-08-28"
+SW1,1,HV enable control,Normally-open momentary low-voltage switch,"Use wired/panel-switch pads and select any DigiKey switch with verified DC current rating after measuring load",TBD,"Do not lock the PCB to a costly industrial switch"
+C1,1,LV bulk capacitor,2200uF 16V radial 105C,"Rubycon 16YXS2200MEFC16X16 (DigiKey 1189-16YXS2200MEFC16X16-ND)",$1.53,"DigiKey stocked when checked 2026-08-28"
+C2,0,Optional extra LV bulk capacitor,2200uF 16V radial 105C,"Same as C1",$1.53,"DNP by default; populate only if measured LV sag justifies it"
+C3,1,Fast bypass,0.1uF to 1uF 25V ceramic/film,"Select commodity DigiKey part to match final PCB footprint",<$1,"Common stocked part; exact MPN deferred until layout is fixed"
+HV1-BUDGET,1,HV insect-zapper module,Sealed/prebuilt 3-6kV-class module sized for insect grid,"NO CHEAP DIGIKEY EQUIVALENT FOUND",~$3-$10 elsewhere,"Budget exception: source sealed commercial zapper module elsewhere; do not build HV converter on PCB"
+HV1-DIGIKEY,0,All-DigiKey HV alternative,5000V 2mA 10W commercial HV module,"XP Power FS50P-12 (DigiKey 1470-3295-ND)",industrial-price class,"DigiKey carries it but it defeats the cheap-hobby objective"
+HV1-DIGIKEY-LOWER,0,All-DigiKey lower-power HV alternative,3000V 1mA 3W commercial HV module,"XP Power E30 (DigiKey 1470-3993-ND)",$234.68,"DigiKey stocked when checked; still far too expensive for this project"
+J2,1,HV module LV interface,Two-position removable connector or solder pads,"Commodity 5.08mm terminal block from DigiKey or direct wire pads",TBD,"Direct solder pads are cheapest"
+J3/J4,2,HV grid connection,Insulated flying-lead / terminal interface rated for actual selected HV module,"Select from DigiKey only after exact HV module and insulation system are fixed",TBD,"Do not use ordinary low-voltage terminal blocks at multi-kV potentials"
+PCB,1,Carrier PCB,2-layer FR4 with segregated LV/HV regions and routed slot,"Custom Rev C",TBD,"Actual HV creepage/clearance must be validated against selected module and enclosure"
