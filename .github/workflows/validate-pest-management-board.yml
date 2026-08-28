@@ -1,0 +1,23 @@
+name: Validate pest management KiCad fixture
+
+on:
+  push:
+    branches:
+      - pest-management-power-board
+    paths:
+      - 'fixtures/pest_management_power_board/**'
+      - '.github/workflows/validate-pest-management-board.yml'
+  pull_request:
+    paths:
+      - 'fixtures/pest_management_power_board/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate KiCad design constraints
+        run: node fixtures/pest_management_power_board/validate_design.mjs
