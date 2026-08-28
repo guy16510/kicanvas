@@ -1,14 +1,14 @@
-Reference,Qty,Function,Specification,Recommended Part / Family,Notes
-BT1,1,Battery pack,Protected/balanced 2S Li-ion 7.4V nominal 8.4V full; discharge capability >=3A,"Matched 2S 18650 pack with BMS",Do not use unmatched miscellaneous cells in permanent 2S pack
-CHG1,1,USB-C 2S charger,5V USB-C input; 8.4V CC/CV output; 1A preferred,"2S 8.4V USB-C charger module, 39x18mm class; production reference TI BQ25883/BQ25886",Charge with HV system off; charger daughterboard is serviceable
-F1,1,HV path fuse,5x20mm fast acting; start 2A,"Littelfuse 217 Series 2A e.g. 0217002.MXP",Increase only after identifying cell/BMS current capability and measuring load
-SW1,1,HV enable switch,Normally-open momentary; verified low-voltage DC current rating >=5A,"Panel-mount industrial momentary switch",Switch is on low-voltage side only
-C1,1,Bulk input capacitor,2200uF 16V low-ESR 105C,"Panasonic FR/FS or Nichicon low-ESR equivalent",Across switched 2S rail near boost converter input
-C2,1,Bulk input capacitor,2200uF 16V low-ESR 105C,"Panasonic FR/FS or Nichicon low-ESR equivalent",Parallel with C1
-C3,1,Fast bypass,1uF 25V film/low-ESR,"WIMA MKS2 or equivalent",Across switched 2S rail
-U1,1,2S-to-12V boost,2.9-12V input; regulated 12V output; >20W-capable; true shutdown preferred,"Pololu U3V70F12, item 2895",Use EN/shutdown so HV converter is not powered while charging/service
-HV1,1,High-voltage converter,11-13V input; 5000V output; 2mA max; 10W; enclosed,"Analog Technologies AHV12V5KV2MAW; DigiKey 4022-AHV12V5KV2MAW-ND",Chassis-mount sealed commercial module; do not reproduce internal HV circuitry on PCB
-J2,1,HV module low-voltage interface,12V and GND heavy two-position connector rated for converter input current,"5.08mm or larger terminal block",Keep physically in low-voltage zone
-J3,1,HV positive grid output,Single HV-rated insulated terminal or flying lead interface,"Connector/terminal rated for at least selected 5kV system and environment",Exact part must be selected by insulation/creepage requirements
-J4,1,HV negative grid output,Single HV-rated insulated terminal or flying lead interface,"Connector/terminal rated for at least selected 5kV system and environment",Exact part must be selected by insulation/creepage requirements
-PCB,1,Rev C carrier PCB,2-layer FR4; >=3mm LV power copper; >=10mm HV clearance; routed isolation slot,"Custom Rev C carrier",HV converter remains offboard/sealed; charger and 12V boost are serviceable modules
+Reference,Qty,Function,Specification,Budget Part / Family,Notes
+BT1,1,Battery pack,Protected 2S Li-ion 7.4V nominal 8.4V full; modest discharge capability,"Generic 2S 18650 holder + inexpensive 2S BMS",Use two reasonably matched cells; do not rely on bare loose cells with no protection
+CHG1,1,USB-C 2S charger,5V USB-C input; 8.4V CC/CV output; approximately 1A,"Generic USB-C 2S 8.4V charger daughterboard / TP5100-class 2S charger module",Use a module that explicitly supports 2S / 8.4V charging; charge with HV system off
+F1,1,HV path fuse,Replaceable low-voltage fuse; start around 2A,"Generic 5x20mm fuse + PCB clips",Cheap sacrificial current limit is preferred over oversizing unknown cells
+SW1,1,HV enable switch,Normally-open momentary low-voltage switch rated for a few amps DC,"Generic panel-mount momentary pushbutton with verified DC contact rating",Only switches the low-voltage side
+C1,1,Bulk input capacitor,1000uF to 2200uF 16V or 25V electrolytic,"Generic radial electrolytic",One inexpensive bulk capacitor is sufficient for the budget build
+C2,1,Optional extra bulk capacitor,1000uF to 2200uF 16V or 25V electrolytic,"Generic radial electrolytic",DNP by default; populate only if battery-side sag is observed
+C3,1,Fast bypass,0.1uF to 1uF 25V ceramic or film,"Generic ceramic/film capacitor",Use whatever common part is on hand
+U1,1,Optional voltage converter,Commodity adjustable DC/DC daughterboard if selected HV module requires a different input voltage,"XL6009-class boost module or LM2596-class buck module as appropriate",Prefer an HV module that can run directly from the 2S pack so U1 can be omitted entirely
+HV1,1,High-voltage converter,Sealed prebuilt insect-zapper HV module; real input range compatible with selected low-voltage rail,"Generic potted insect-killer / mosquito-zapper HV module, approximately 3-6kV class",Ignore fantasy 1000kV marketing claims; choose by input voltage, observed recovery under load, and price; do not reproduce HV circuitry on this PCB
+J2,1,HV module low-voltage interface,Two-position removable connector or solder pads,"Generic 5.08mm terminal block or direct wire pads",Direct solder pads are cheapest if module is permanently installed
+J3,1,HV positive mesh output,Insulated flying lead or separated screw terminal,"Direct solder/flying lead preferred for lowest cost",Maintain physical isolation and enclosure protection
+J4,1,HV negative mesh output,Insulated flying lead or separated screw terminal,"Direct solder/flying lead preferred for lowest cost",Maintain physical isolation and enclosure protection
+PCB,1,Rev C budget carrier PCB,2-layer FR4; wide LV copper; HV separation slot,"Custom Rev C carrier",Commodity modules mount by wires/headers so exact marketplace module dimensions can vary
